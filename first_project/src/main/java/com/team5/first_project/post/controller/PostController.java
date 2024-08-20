@@ -33,7 +33,7 @@ public class PostController {
 
         model.addAttribute("posts", posts);
 
-        return "board";
+        return "board/board";
     }
 
     // 개별 게시글 조회
@@ -42,15 +42,14 @@ public class PostController {
         Post post = postService.findById(id);
 
         model.addAttribute("post", new PostResponseDto(post));
-        model.addAttribute("comments", new ArrayList<>());
-
+        //model.addAttribute("comments", new ArrayList<>());
         // Comments (comment 원소) 리스트타입을 model.addAttribute();
 
-        return "post";
+        return "post/test";
     }
 
     // 게시글 삭제
-    @DeleteMapping("post/{id}")
+    @DeleteMapping("posts/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable("id") long id) {
         postService.delete(id);
         return ResponseEntity.ok()
