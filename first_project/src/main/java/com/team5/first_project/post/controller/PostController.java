@@ -1,27 +1,30 @@
 package com.team5.first_project.post.controller;
 
+import com.team5.first_project.post.dto.PostRequestDto;
 import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.service.PostService;
-import com.team5.first_project.comment.entity.Comment;
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
-import java.util.*;
-
+@RestController
 @RequiredArgsConstructor
-@Controller
 public class PostController {
 
     private final PostService postService;
+
+    // 게시글 생성
+    // @AuthenticationPrincipal
+    @PostMapping("/posts/create/{boardId}")
+    public String createPost(@Valid @RequestBody PostRequestDto postRequestDto){
+        PostResponseDto postResponseDto = postService.createPost(postRequestDto);
+        return "redirect:/board/" + postResponseDto.getBoardId();
+    }
 
     // 전체 게시글 조회
     @GetMapping("/posts")
@@ -48,6 +51,16 @@ public class PostController {
         return "post/test";
     }
 
+
+    // 게시글 수정
+    // @AuthenticationPrincipal
+    @PatchMapping("/posts/{postId}")
+    public String updatePost(@PathVariable Long postId,
+                                       @Valid @RequestBody PostRequestDto requestDto){
+        PostResponseDto postResponseDto = postService.updatePost(postId, requestDto);
+        return "redirect:/board/" + postResponseDto.getBoardId();
+    }
+
     // 게시글 삭제
     @DeleteMapping("posts/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable("id") long id) {
@@ -55,4 +68,5 @@ public class PostController {
         return ResponseEntity.ok()
                 .build();
     }
+
 }

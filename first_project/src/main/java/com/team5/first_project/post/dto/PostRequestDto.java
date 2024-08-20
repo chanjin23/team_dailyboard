@@ -1,6 +1,8 @@
 package com.team5.first_project.post.dto;
 
 import com.team5.first_project.post.entity.Post;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 /*
@@ -13,8 +15,12 @@ import lombok.Getter;
 @Getter
 public class PostRequestDto {
 
+    @NotBlank(message = "제목을 입력해주세요.")
+    @Size(max = 30, message = "제목은 최대 30자까지만 허용됩니다.")
     private String title;
 
+    @NotBlank(message = "내용을 입력해주세요.")
+    @Size(max = 2500, message = "내용은 2500자까지만 허용됩니다.")
     private String content;
 
     public Post toEntity() {
@@ -23,4 +29,5 @@ public class PostRequestDto {
                 .content(content)
                 .build();
     }
+
 }
