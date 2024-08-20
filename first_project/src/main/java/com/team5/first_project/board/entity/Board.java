@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 public class Board {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,6 +26,11 @@ public class Board {
 
     private String description;
 
+    @Column(nullable = false)
+    private String type; // 게시판의 종류
+
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> postList;
+
+
 }
