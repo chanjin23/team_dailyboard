@@ -7,12 +7,13 @@ import com.team5.first_project.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class PostController {
 
@@ -40,8 +41,8 @@ public class PostController {
     }
 
     // 개별 게시글 조회
-    @GetMapping("/posts/{id}")
-    public String getPost(@PathVariable("id") long id, Model model) {
+    @GetMapping("/posts/{postId}")
+    public String getPost(@PathVariable("postId") long id, Model model) {
         Post post = postService.findById(id);
 
         model.addAttribute("post", new PostResponseDto(post));
@@ -62,11 +63,10 @@ public class PostController {
     }
 
     // 게시글 삭제
-    @DeleteMapping("posts/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable("id") long id) {
+    @DeleteMapping("posts/{postId}")
+    public String deletePost(@PathVariable("id") long id) {
         postService.delete(id);
-        return ResponseEntity.ok()
-                .build();
+        return "redirect:/posts";
     }
 
 }
