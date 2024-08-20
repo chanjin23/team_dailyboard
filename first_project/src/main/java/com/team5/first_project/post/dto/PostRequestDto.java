@@ -1,5 +1,6 @@
 package com.team5.first_project.post.dto;
 
+import com.team5.first_project.post.entity.Post;
 import lombok.Getter;
 
 /*
@@ -15,4 +16,11 @@ public class PostRequestDto {
     private String title;
 
     private String content;
+
+    public Post toEntity() {
+        return Post.builder()
+                .title(title)
+                .content(content)
+                .build();
+    }
 }
