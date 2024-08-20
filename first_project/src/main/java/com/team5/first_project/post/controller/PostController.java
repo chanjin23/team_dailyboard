@@ -16,10 +16,10 @@ public class PostController {
 
     // 게시글 생성
     // @AuthenticationPrincipal
-    @PostMapping("/post")
+    @PostMapping("/posts/create/{boardId}")
     public String createPost(@Valid @RequestBody PostRequestDto postRequestDto){
         PostResponseDto postResponseDto = postService.createPost(postRequestDto);
-        return "board";
+        return "redirect:/board/" + postResponseDto.getBoardId();
     }
 
     // 게시글 수정
@@ -27,7 +27,7 @@ public class PostController {
     @PatchMapping("/posts/{postId}")
     public String updatePost(@PathVariable Long postId,
                                        @Valid @RequestBody PostRequestDto requestDto){
-        postService.updatePost(postId, requestDto);
-        return "board";
+        PostResponseDto postResponseDto = postService.updatePost(postId, requestDto);
+        return "redirect:/board/" + postResponseDto.getBoardId();
     }
 }
