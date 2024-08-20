@@ -39,4 +39,5 @@ public class PostResponseDto {
         // commentList 불러오기
         this.boardId = post.getBoard().getId();
     }
+
 }

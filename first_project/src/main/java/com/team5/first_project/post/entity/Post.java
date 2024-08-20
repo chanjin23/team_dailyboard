@@ -6,10 +6,7 @@ import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.dto.PostRequestDto;
 import com.team5.first_project.timestamp.Timestamp;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,5 +47,11 @@ public class Post extends Timestamp {
     public void update(PostRequestDto postRequestDto){
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+    }
+
+    @Builder
+    public Post (String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }
