@@ -1,5 +1,7 @@
 package com.team5.first_project.comment.entity;
 
+import com.team5.first_project.comment.dto.CommentPostDto;
+import com.team5.first_project.comment.dto.CommentResponseDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.timestamp.Timestamp;
@@ -30,4 +32,12 @@ public class Comment extends Timestamp {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    public Comment(String content) {
+        this.content = content;
+    }
+
+    public CommentResponseDto toCommentResponseDto() {
+        return new CommentResponseDto(id,content);
+    }
 }
