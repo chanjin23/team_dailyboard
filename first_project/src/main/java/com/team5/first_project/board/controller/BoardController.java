@@ -1,56 +1,93 @@
 package com.team5.first_project.board.controller;
 
 import com.team5.first_project.board.dto.BoardDTO;
+import com.team5.first_project.board.dto.RequestBoardDto;
+import com.team5.first_project.board.dto.ResponseBoardDto;
+import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.service.BoardService;
+import com.team5.first_project.post.dto.PostResponseDto;
+import com.team5.first_project.post.service.PostService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/boards")
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/boards")
 public class BoardController {
-    @Autowired
-    private BoardService boardService;
+
+    private final BoardService boardService;
+    private final PostService postService;
 
     // 모든 게시판 조회
     @GetMapping
-    public ResponseEntity<List<BoardDTO>> getAllBoards() {
+    public String getAllBoards(Model model) {
         List<BoardDTO> boards = boardService.getAllBoards();
-        return new ResponseEntity<>(boards, HttpStatus.OK);
+        model.addAttribute("boards", boards);
+        return "board/boards";
     }
 
     // 게시판 ID로 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<BoardDTO> getBoardById(@PathVariable Long id) {
-        BoardDTO board = boardService.getBoardById(id);
-        return new ResponseEntity<>(board, HttpStatus.OK);
+    @GetMapping("/{boardId}")
+    public String getBoardById(@PathVariable("boardId") Long id, Model model) {
+        Board board = boardService.getBoardById(id);
+        model.addAttribute("board", board);
+
+        List<PostResponseDto> posts = postService.findAll()
+                .stream()
+                .map(PostResponseDto::new)
+                .toList();
+
+        model.addAttribute("postPage", posts);
+        return "board/board";
     }
 
     // 게시판 생성
-    @PostMapping
-    public ResponseEntity<BoardDTO> createBoard(@RequestBody BoardDTO boardDTO) {
-        BoardDTO BoardDTO = null;
-        BoardDTO createdBoard = boardService.saveBoard(null);
-        return new ResponseEntity<>(createdBoard, HttpStatus.CREATED);
+    @GetMapping("/create")
+    public String createBoard() {
+        return "board/createBoard";
+    }
+
+    @PostMapping("/create")
+    public String createBoard(@RequestParam("name") String name,
+                              @RequestParam("description") String description,
+                              @RequestParam("type") String type,
+                              Model model) {
+        ResponseBoardDto saveBoard = boardService.saveBoard(name, description, type);
+        model.addAttribute("boards", saveBoard);
+        return "redirect:/boards";
     }
 
     // 게시판 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<BoardDTO> updateBoard(@PathVariable Long id, @RequestBody BoardDTO boardDTO) {
-        BoardDTO BoardDTO = null;
-        BoardDTO updatedBoard = boardService.updateBoard(id, null);
-        return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
+    @GetMapping("/{id}/edit")
+    public String editBoard(@PathVariable("id") Long id, Model model) {
+        Board board =boardService.getBoardById(id);
+        model.addAttribute("board", board);
+        return "board/editBoard";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editBoardPage(@PathVariable("id") Long id,
+                                @RequestParam("description") String description,
+                                @RequestParam("name") String name,
+                                @RequestParam("type") String type) {
+        boardService.updateBoard(id, description, name, type);
+        return "redirect:/boards";
     }
 
     // 게시판 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long id) {
+    @DeleteMapping("/{boardId}/delete")
+    public String deleteBoard(@PathVariable("boardId") Long id) {
         boardService.deleteBoard(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        System.out.println("BoardController.deleteBoard");
+        return "redirect:/boards";
     }
 
     // 게시판 타입으로 조회

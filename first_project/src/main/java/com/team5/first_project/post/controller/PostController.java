@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,70 +21,72 @@ public class PostController {
     private final PostService postService;
 
     // 게시글 생성
-    @GetMapping("/posts/create/{id}")
-    public String createPage(@PathVariable("id") long id, Model model){
-        model.addAttribute("boardId", id);
-        return "createPost";
+    @GetMapping("/posts/create")
+    public String createPage(@RequestParam("boardId") long boardId, Model model) {
+        model.addAttribute("boardId", boardId);
+        return "post/createPost";
     }
 
     // @AuthenticationPrincipal
-    @PostMapping("/posts/create/{id}")
-    public String createPost(@PathVariable("id") long id,
-                             @Valid @ModelAttribute PostRequestDto postRequestDto){
-        // postRequestDto.setBoardId(id);
-        // requestDto에 boardId추가 후 주석 해제
-        PostResponseDto postResponseDto = postService.createPost(postRequestDto);
-        return "redirect:/board/";
+    @PostMapping("/posts/create")
+    public String createPost(@RequestParam("boardId") long id,
+                             @Valid @ModelAttribute PostRequestDto postRequestDto,
+                             BindingResult bindingResult){
+        // 오류가 나면 다시 생성으로
+        if(bindingResult.hasErrors()){
+            return "post/createPost";
+        }
+        PostResponseDto postResponseDto = postService.createPost(id, postRequestDto);
+        return "redirect:/boards" + id;
     }
 
-    // 전체 게시글 조회
-    @GetMapping("/posts")
-    public String getAllPosts(Model model) {
-        List<PostResponseDto> posts = postService.findAll()
-                .stream()
-                .map(PostResponseDto::new)
-                .toList();
-
-        model.addAttribute("posts", posts);
-
-        return "board/board";
-    }
+//    // 전체 게시글 조회
+//    @GetMapping("/boards/{boardId}")
+//    public String getAllPosts(@PathVariable("boardId") long id, Model model) {
+//        List<PostResponseDto> posts = postService.findAll()
+//                .stream()
+//                .map(PostResponseDto::new)
+//                .toList();
+//
+//        model.addAttribute("posts", posts);
+//
+//        return "board/board";
+//    }
 
     // 개별 게시글 조회
-    @GetMapping("/posts/{id}")
-    public String getPost(@PathVariable("id") long id, Model model) {
+    @GetMapping("/posts/{postId}")
+    public String getPost(@PathVariable("postId") long id, Model model) {
         Post post = postService.findById(id);
 
         model.addAttribute("post", new PostResponseDto(post));
         //model.addAttribute("comments", new ArrayList<>());
         // Comments (comment 원소) 리스트타입을 model.addAttribute();
 
-        return "post/test";
+        return "post/post";
     }
 
 
     // 게시글 수정
-    @GetMapping("/post/{id}/edit")
-    public String editPage(@PathVariable("id") Long id, Model model){
+    @GetMapping("/post/{postId}/edit")
+    public String editPage(@PathVariable("postId") Long id, Model model){
         Post post = postService.findById(id);
-        model.addAttribute("post", new PostResponseDto[post]);
-        return "editPost";
+        model.addAttribute("post", new PostResponseDto(post));
+        return "post/editPost";
     }
 
     // @AuthenticationPrincipal
-    @PostMapping("/post/{id}/edit")
-    public String updatePost(@PathVariable("id") Long id,
+    @PostMapping("/post/{postId}/edit")
+    public String updatePost(@PathVariable("postId") Long id,
                                        @Valid @ModelAttribute PostRequestDto requestDto){
-        postService.updatePost(id, requestDto);
-        return "redirect:/board/";
+        PostResponseDto postResponseDto = postService.updatePost(id, requestDto);
+        return "redirect:boards" + postResponseDto.getBoardId();
     }
 
     // 게시글 삭제
-    @DeleteMapping("posts/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable("id") long id) {
+    @PostMapping("posts/{postId}")
+    public String deletePost(@PathVariable("postId") long id) {
         postService.delete(id);
-        return ResponseEntity.ok()
-                .build();
+        return "redirect:/posts";
     }
 
 }

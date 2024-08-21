@@ -1,8 +1,10 @@
 package com.team5.first_project.post.service;
 
+import com.team5.first_project.board.repository.BoardRepository;
 import com.team5.first_project.post.dto.PostRequestDto;
 import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.entity.Post;
+import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,14 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final BoardRepository boardRepository;
 
     // 게시글 생성
     @Transactional
-    public PostResponseDto createPost(PostRequestDto postRequestDto){
-        Post post = new Post(postRequestDto);
+    public PostResponseDto createPost(long id, PostRequestDto postRequestDto){
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
+        Post post = new Post(board, postRequestDto);
         postRepository.save(post);
         return new PostResponseDto(post);
     }
@@ -38,14 +43,14 @@ public class PostService {
 
 
     // 게시글 수정
-        @Transactional
-        public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
-            Post post = postRepository.findById(id).orElseThrow(
-                    () -> new IllegalArgumentException("해당 게시글은 존재하지 않는 게시글입니다.")
-            );
-            post.update(requestDto);
-            return new PostResponseDto(post);
-        }
+    @Transactional
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글은 존재하지 않는 게시글입니다.")
+        );
+        post.update(requestDto);
+        return new PostResponseDto(post);
+    }
 
     // 게시글 삭제
     @Transactional
