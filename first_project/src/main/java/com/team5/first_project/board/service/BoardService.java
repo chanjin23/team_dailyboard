@@ -23,14 +23,16 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    // 모든 게시판 조회
-    public List<BoardDTO> getAllBoards() {
-        return boardRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    /**
+     * 모든 게시판 조회
+     */
+    public List<Board> getAllBoards() {
+        return boardRepository.findAll();
     }
 
-    // 특정 게시판 조회
+    /**
+     * 특정 게시판 조회
+     */
     public Board getBoardById(Long id) {
         return boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(
@@ -38,7 +40,9 @@ public class BoardService {
                 ));
     }
 
-    // 게시판 저장 (Create)
+    /**
+     * 게시판 저장 (Create)
+     */
     public ResponseBoardDto saveBoard(String name, String description, String type) {
         RequestBoardDto requestBoardDto = new RequestBoardDto(name, description, type);
         Board board = requestBoardDto.toEntity(requestBoardDto);
@@ -48,26 +52,9 @@ public class BoardService {
         return saveBoard.toResponseBoardDto();
     }
 
-    // 게시판 수정 (Update)
-//    public BoardDTO updateBoard(Long id, BoardDTO boardDTO) {
-////        @PathVariable Long id,
-////        @RequestParam String description,
-////        @RequestParam String name,
-////        @RequestParam String type,
-//        Optional<Board> optionalBoard = boardRepository.findById(id);
-//        if (optionalBoard.isPresent()) {
-//            Board board = optionalBoard.get();
-//            board.setName(boardDTO.getName());
-//            board.setDescription(boardDTO.getDescription());
-//            board.setType(boardDTO.getType());
-//            Board updatedBoard = boardRepository.save(board);
-//            return convertToDTO(updatedBoard);
-//        } else {
-//            throw new RuntimeException("게시판이 존재하지 않습니다.");
-//        }
-//    }
-
-    // 게시판 삭제
+    /**
+     * 게시판 삭제
+     */
     public void deleteBoard(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("d"));
@@ -75,7 +62,9 @@ public class BoardService {
         boardRepository.deleteById(board.getId());
     }
 
-    // 게시판 타입으로 조회
+    /**
+     * 게시판 타입으로 조회
+     */
     public List<BoardDTO> getBoardsByType(String type) {
         return boardRepository.findByType(type).stream()
                 .map(this::convertToDTO)
