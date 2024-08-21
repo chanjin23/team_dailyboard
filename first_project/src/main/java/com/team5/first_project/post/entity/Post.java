@@ -32,14 +32,15 @@ public class Post extends Timestamp {
     private List<Comment> commentList = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    public Post(PostRequestDto postRequestDto){
+    public Post(Board board, PostRequestDto postRequestDto){
+        this.board = board;
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
     }
