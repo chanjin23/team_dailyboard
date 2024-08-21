@@ -26,7 +26,7 @@ public class PostResponseDto {
     // private String memberName;
     private String boardName;
     private LocalDateTime recentTime;
-    // private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
     private Long boardId;
 
     public PostResponseDto(Post post) {
@@ -36,7 +36,7 @@ public class PostResponseDto {
         // this.memberName = post.getMember().getName();
         this.boardName = post.getBoard().getName();
         this.recentTime = post.getUpdatedTime() == null ? post.getCreatedTime() : post.getUpdatedTime();
-        // commentList 불러오기
+        this.comments = post.getCommentList();
         this.boardId = post.getBoard().getId();
     }
 
