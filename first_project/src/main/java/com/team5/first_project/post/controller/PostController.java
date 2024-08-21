@@ -20,15 +20,15 @@ public class PostController {
     private final PostService postService;
 
     // 게시글 생성
-    @GetMapping("/posts/create/{id}")
-    public String createPage(@PathVariable("id") long id, Model model){
+    @GetMapping("/posts/create/{boardId}")
+    public String createPage(@PathVariable("boardId") long id, Model model){
         model.addAttribute("boardId", id);
         return "createPost";
     }
 
     // @AuthenticationPrincipal
-    @PostMapping("/posts/create/{id}")
-    public String createPost(@PathVariable("id") long id,
+    @PostMapping("/posts/create/{boardId}")
+    public String createPost(@PathVariable("boardId") long id,
                              @Valid @ModelAttribute PostRequestDto postRequestDto){
         // postRequestDto.setBoardId(id);
         // requestDto에 boardId추가 후 주석 해제
@@ -37,8 +37,8 @@ public class PostController {
     }
 
     // 전체 게시글 조회
-    @GetMapping("/posts")
-    public String getAllPosts(Model model) {
+    @GetMapping("/boards/{boardId}")
+    public String getAllPosts(@PathVariable("boardId") long id, Model model) {
         List<PostResponseDto> posts = postService.findAll()
                 .stream()
                 .map(PostResponseDto::new)
@@ -63,23 +63,23 @@ public class PostController {
 
 
     // 게시글 수정
-    @GetMapping("/post/{id}/edit")
-    public String editPage(@PathVariable("id") Long id, Model model){
+    @GetMapping("/post/{postId}/edit")
+    public String editPage(@PathVariable("postId") Long id, Model model){
         Post post = postService.findById(id);
         model.addAttribute("post", new PostResponseDto(post));
         return "editPost";
     }
 
     // @AuthenticationPrincipal
-    @PostMapping("/post/{id}/edit")
-    public String updatePost(@PathVariable("id") Long id,
+    @PostMapping("/post/{postId}/edit")
+    public String updatePost(@PathVariable("postId") Long id,
                                        @Valid @ModelAttribute PostRequestDto requestDto){
         postService.updatePost(id, requestDto);
         return "redirect:/board/";
     }
 
     // 게시글 삭제
-    @DeleteMapping("posts/{postId}")
+    @PostMapping("posts/{postId}")
     public String deletePost(@PathVariable("postId") long id) {
         postService.delete(id);
         return "redirect:/posts";
