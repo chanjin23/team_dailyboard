@@ -67,7 +67,7 @@
                 >
                     <a
                             class="board-item pe-auto p-3 link-underline link-underline-opacity-0 d-flex"
-                            th:href="@{/boards/{boardId}(boardId=${board.id})}"
+                            th:href="@{/boards/{boardId}(boardId=${board?.id})}"
                     >
                         <img
                                 class="img-thumbnail w-50 h-50 me-3"
@@ -150,7 +150,13 @@
                 >
                     취소
                 </button>
-                <a th:href="@{/board/(id=${board.id})/delete}">글 삭제</a>
+                <button
+                        type="button"
+                        class="btn btn-danger"
+                        onclick="handleDeleteModalButton()"
+                >
+                    삭제
+                </button>
             </div>
         </div>
     </div>

@@ -83,10 +83,9 @@ public class BoardController {
     }
 
     // 게시판 삭제
-    @DeleteMapping("/{boardId}/delete")
-    public String deleteBoard(@PathVariable("boardId") Long id) {
+    @DeleteMapping("/{id}/delete")
+    public String deleteBoard(@PathVariable("id") Long id) {
         boardService.deleteBoard(id);
-        System.out.println("BoardController.deleteBoard");
         return "redirect:/boards";
     }
 
