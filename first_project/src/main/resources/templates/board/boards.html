@@ -150,13 +150,7 @@
                 >
                     취소
                 </button>
-                <button
-                        type="button"
-                        class="btn btn-danger"
-                        onclick="handleDeleteModalButton()"
-                >
-                    삭제
-                </button>
+                <a th:href="@{/board/(id=${board.id})/delete}">글 삭제</a>
             </div>
         </div>
     </div>

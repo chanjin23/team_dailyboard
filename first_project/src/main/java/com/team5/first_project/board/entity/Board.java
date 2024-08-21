@@ -46,4 +46,13 @@ public class Board {
     public ResponseBoardDto toResponseBoardDto() {
         return new ResponseBoardDto(name, description, type);
     }
+    public ResponseBoardDto toResponseUpdateBoardDto() {
+        return new ResponseBoardDto(id, name, description, type);
+    }
+
+    public void update(String description, String name, String type) {
+        this.description = description;
+        this.name = name;
+        this.type = type;
+    }
 }
