@@ -33,7 +33,9 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.memberName = post.getMember().getName();
+        if (post.getMember() != null) {
+            this.memberName = post.getMember().getName();
+        }
         this.boardName = post.getBoard().getName();
         this.recentTime = post.getUpdatedTime() == null ? post.getCreatedTime() : post.getUpdatedTime();
         // commentList 불러오기
