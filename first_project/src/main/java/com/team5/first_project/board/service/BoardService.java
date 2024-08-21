@@ -3,6 +3,7 @@ package com.team5.first_project.board.service;
 import com.team5.first_project.board.dto.BoardDTO;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.repository.BoardRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +12,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BoardService {
 
-    @Autowired
-    private static BoardRepository boardRepository;
+
+    private final BoardRepository boardRepository;
 
     // 모든 게시판 조회
     public List<BoardDTO> getAllBoards() {

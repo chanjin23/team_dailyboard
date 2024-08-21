@@ -37,8 +37,8 @@ public class PostController {
     }
 
     // 전체 게시글 조회
-    @GetMapping("/posts")
-    public String getAllPosts(Model model) {
+    @GetMapping("/boards/{boardId}")
+    public String getAllPosts(@PathVariable("boardId") long id, Model model) {
         List<PostResponseDto> posts = postService.findAll()
                 .stream()
                 .map(PostResponseDto::new)
@@ -58,7 +58,7 @@ public class PostController {
         //model.addAttribute("comments", new ArrayList<>());
         // Comments (comment 원소) 리스트타입을 model.addAttribute();
 
-        return "post/test";
+        return "post/post";
     }
 
 
