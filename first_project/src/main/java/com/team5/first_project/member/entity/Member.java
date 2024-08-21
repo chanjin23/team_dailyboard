@@ -6,10 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -33,7 +29,6 @@ public class Member extends Timestamp {
 
     @Column(nullable = false, unique = true)
     private String password;
-
 
 //    @Column(nullable = false)
 //    @Enumerated(value = EnumType.STRING)

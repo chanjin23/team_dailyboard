@@ -21,13 +21,10 @@ public class PostService {
 
     // 게시글 생성
     @Transactional
-    public PostResponseDto createPost(long id, String title, String content){
+    public PostResponseDto createPost(long id, PostRequestDto postRequestDto){
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
-        PostRequestDto postRequestDto = new PostRequestDto(title, content);
         Post post = new Post(board, postRequestDto);
-
-//        Post post = postRequestDto.toEntity(postRequestDto);
         postRepository.save(post);
         return new PostResponseDto(post);
     }
