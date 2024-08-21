@@ -37,7 +37,7 @@ public class BoardController {
     // 게시판 ID로 조회
     @GetMapping("/{boardId}")
     public String getBoardById(@PathVariable("boardId") Long id, Model model) {
-        BoardDTO board = boardService.getBoardById(id);
+        Board board = boardService.getBoardById(id);
         model.addAttribute("board", board);
 
         List<PostResponseDto> posts = postService.findAll()
@@ -60,29 +60,34 @@ public class BoardController {
                               @RequestParam("description") String description,
                               @RequestParam("type") String type,
                               Model model) {
-        RequestBoardDto requestBoardDto = new RequestBoardDto(name, description, type);
-        Board board = new Board(requestBoardDto);
-        Board saveBoard = boardService.saveBoard(board);
-
-        ResponseBoardDto responseBoardDto = saveBoard.toResponseBoardDto();
-        System.out.println("BoardController.createBoard");
-        model.addAttribute("boards", responseBoardDto);
+        ResponseBoardDto saveBoard = boardService.saveBoard(name, description, type);
+        model.addAttribute("boards", saveBoard);
         return "redirect:/boards";
     }
 
     // 게시판 수정
-    @PutMapping("/{id}/edit")
-    public ResponseEntity<BoardDTO> updateBoard(@PathVariable Long id, @RequestBody BoardDTO boardDTO) {
-        BoardDTO BoardDTO = null;
-        BoardDTO updatedBoard = boardService.updateBoard(id, null);
-        return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
+    @GetMapping("/{id}/edit")
+    public String editBoard(@PathVariable("id") Long id, Model model) {
+        Board board =boardService.getBoardById(id);
+        model.addAttribute("board", board);
+        return "board/editBoard";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editBoardPage(@PathVariable("id") Long id,
+                                @RequestParam("description") String description,
+                                @RequestParam("name") String name,
+                                @RequestParam("type") String type) {
+        boardService.updateBoard(id, description, name, type);
+        return "redirect:/boards";
     }
 
     // 게시판 삭제
-    @PostMapping("/{id}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long id) {
+    @DeleteMapping("/{boardId}/delete")
+    public String deleteBoard(@PathVariable("boardId") Long id) {
         boardService.deleteBoard(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        System.out.println("BoardController.deleteBoard");
+        return "redirect:/boards";
     }
 
     // 게시판 타입으로 조회
