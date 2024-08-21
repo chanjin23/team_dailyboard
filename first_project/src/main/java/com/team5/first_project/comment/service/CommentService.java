@@ -1,7 +1,11 @@
 package com.team5.first_project.comment.service;
 
+import com.team5.first_project.comment.dto.CommentPostDto;
+import com.team5.first_project.comment.dto.CommentResponseDto;
 import com.team5.first_project.comment.entity.Comment;
 import com.team5.first_project.comment.repository.CommentRepository;
+import com.team5.first_project.post.entity.Post;
+import com.team5.first_project.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,23 +16,38 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
-    public Comment createComment(Comment comment) {
-        return commentRepository.save(comment);
+    // 댓글 생성
+    public void createComment(long id, CommentPostDto commentPostDto) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() ->new IllegalArgumentException("존재하지 않는 게시글입니다."));;
+        Comment comment = new Comment(post, commentPostDto);
+        commentRepository.save(comment);
     }
 
+    // 댓글 전체 조회
     public List<Comment> findAllComments() {
         return commentRepository.findAll();
     }
 
+    // 댓글 개별 조회
     public Comment findComment(long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() ->new IllegalArgumentException("해당 댓글이 존재하지 않습니다. id: " + id));
         return comment;
     }
 
+    // 댓글 수정
+    public CommentResponseDto updateComment(long id, CommentPostDto commentPostDto){
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        comment.setContent(commentPostDto.getContent());
+        return new CommentResponseDto(comment);
+    }
+
+    // 댓글 삭제
     public void deleteComment(long id) {
-        Comment comment = findComment(id);
-        commentRepository.delete(comment);
+        commentRepository.deleteById(id);
     }
 }

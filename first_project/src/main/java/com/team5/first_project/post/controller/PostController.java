@@ -84,9 +84,10 @@ public class PostController {
     }
 
     // 게시글 삭제
-    @PostMapping("posts/{postId}")
-    public void deletePost(@PathVariable("postId") long id) {
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable("postId") long id) {
         postService.delete(id);
+        return ResponseEntity.noContent().build(); // 204 No Content 응답을 반환
     }
 
 }
