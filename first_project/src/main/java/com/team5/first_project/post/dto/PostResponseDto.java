@@ -23,7 +23,7 @@ public class PostResponseDto {
     private Long id;
     private String title;
     private String content;
-    private String memberName;
+    // private String memberName;
     private String boardName;
     private LocalDateTime recentTime;
     // private List<Comment> comments = new ArrayList<>();
@@ -33,9 +33,7 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        if (post.getMember() != null) {
-            this.memberName = post.getMember().getName();
-        }
+        // this.memberName = post.getMember().getName();
         this.boardName = post.getBoard().getName();
         this.recentTime = post.getUpdatedTime() == null ? post.getCreatedTime() : post.getUpdatedTime();
         // commentList 불러오기

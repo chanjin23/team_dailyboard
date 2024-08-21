@@ -16,26 +16,27 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
 
     // 게시글 생성
-    @GetMapping("/create")
+    @GetMapping("/posts/create")
     public String createPage(@RequestParam("boardId") long boardId, Model model) {
         model.addAttribute("boardId", boardId);
         return "post/createPost";
     }
 
     // @AuthenticationPrincipal
-    @PostMapping("/create")
+    @PostMapping("/posts/create")
     public String createPost(@RequestParam("boardId") long id,
-                            @RequestParam("title") String title,
-                             @RequestParam("content") String content,
-                             Model model){
-        PostResponseDto savePost = postService.createPost(id, title, content);
-        model.addAttribute("posts", savePost);
+                             @Valid @ModelAttribute PostRequestDto postRequestDto,
+                             BindingResult bindingResult){
+        // 오류가 나면 다시 생성으로
+        if(bindingResult.hasErrors()){
+            return "post/createPost";
+        }
+        PostResponseDto postResponseDto = postService.createPost(id, postRequestDto);
         return "redirect:/boards/" + id;
     }
 
@@ -53,7 +54,7 @@ public class PostController {
 //    }
 
     // 개별 게시글 조회
-    @GetMapping("/{postId}")
+    @GetMapping("/posts/{postId}")
     public String getPost(@PathVariable("postId") long id, Model model) {
         Post post = postService.findById(id);
 
@@ -66,7 +67,7 @@ public class PostController {
 
 
     // 게시글 수정
-    @GetMapping("/{postId}/edit")
+    @GetMapping("/posts/{postId}/edit")
     public String editPage(@PathVariable("postId") Long id, Model model){
         Post post = postService.findById(id);
         model.addAttribute("post", new PostResponseDto(post));
@@ -74,7 +75,7 @@ public class PostController {
     }
 
     // @AuthenticationPrincipal
-    @PostMapping("/{postId}/edit")
+    @PostMapping("/posts/{postId}/edit")
     public String updatePost(@PathVariable("postId") Long id,
                                        @Valid @ModelAttribute PostRequestDto requestDto){
         PostResponseDto postResponseDto = postService.updatePost(id, requestDto);
@@ -82,7 +83,7 @@ public class PostController {
     }
 
     // 게시글 삭제
-    @PostMapping("/{postId}")
+    @PostMapping("posts/{postId}")
     public String deletePost(@PathVariable("postId") long id) {
         postService.delete(id);
         return "redirect:/posts";
