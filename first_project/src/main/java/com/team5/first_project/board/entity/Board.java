@@ -1,5 +1,7 @@
 package com.team5.first_project.board.entity;
 
+import com.team5.first_project.board.dto.RequestBoardDto;
+import com.team5.first_project.board.dto.ResponseBoardDto;
 import com.team5.first_project.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,4 +35,15 @@ public class Board {
     private List<Post> postList;
 
 
+    public Board(RequestBoardDto requestBoardDto) {
+        this.id = getId();
+        this.name = requestBoardDto.getName();
+        this.description = requestBoardDto.getDescription();
+        this.type = requestBoardDto.getType();
+        this.postList = getPostList();
+    }
+
+    public ResponseBoardDto toResponseBoardDto() {
+        return new ResponseBoardDto(name, description, type);
+    }
 }

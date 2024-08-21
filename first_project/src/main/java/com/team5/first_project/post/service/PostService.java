@@ -38,14 +38,14 @@ public class PostService {
 
 
     // 게시글 수정
-        @Transactional
-        public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
-            Post post = postRepository.findById(id).orElseThrow(
-                    () -> new IllegalArgumentException("해당 게시글은 존재하지 않는 게시글입니다.")
-            );
-            post.update(requestDto);
-            return new PostResponseDto(post);
-        }
+    @Transactional
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글은 존재하지 않는 게시글입니다.")
+        );
+        post.update(requestDto);
+        return new PostResponseDto(post);
+    }
 
     // 게시글 삭제
     @Transactional
