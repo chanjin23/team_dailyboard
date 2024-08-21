@@ -3,7 +3,9 @@ package com.team5.first_project.post.dto;
 import com.team5.first_project.post.entity.Post;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /*
     RequestDto
@@ -13,6 +15,7 @@ import lombok.Getter;
 */
 
 @Getter
+@Setter
 public class PostRequestDto {
 
     @NotBlank(message = "제목을 입력해주세요.")
