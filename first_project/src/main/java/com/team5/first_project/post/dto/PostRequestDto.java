@@ -23,11 +23,13 @@ public class PostRequestDto {
     @Size(max = 2500, message = "내용은 2500자까지만 허용됩니다.")
     private String content;
 
-    public Post toEntity() {
-        return Post.builder()
-                .title(title)
-                .content(content)
-                .build();
+    public Post toEntity(PostRequestDto postRequestDto) {
+        return new Post(postRequestDto);
+    }
+
+    public PostRequestDto(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
 }
