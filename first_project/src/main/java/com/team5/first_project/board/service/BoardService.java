@@ -33,10 +33,8 @@ public class BoardService {
     }
 
     // 게시판 저장 (Create)
-    public BoardDTO saveBoard(BoardDTO boardDTO) {
-        Board board = convertToEntity(boardDTO);
-        Board savedBoard = boardRepository.save(board);
-        return convertToDTO(savedBoard);
+    public Board saveBoard(Board board) {
+        return boardRepository.save(board);
     }
 
     // 게시판 수정 (Update)

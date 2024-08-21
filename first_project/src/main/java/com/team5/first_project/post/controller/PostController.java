@@ -36,18 +36,18 @@ public class PostController {
         return "redirect:/board/";
     }
 
-    // 전체 게시글 조회
-    @GetMapping("/boards/{boardId}")
-    public String getAllPosts(@PathVariable("boardId") long id, Model model) {
-        List<PostResponseDto> posts = postService.findAll()
-                .stream()
-                .map(PostResponseDto::new)
-                .toList();
-
-        model.addAttribute("posts", posts);
-
-        return "board/board";
-    }
+//    // 전체 게시글 조회
+//    @GetMapping("/boards/{boardId}")
+//    public String getAllPosts(@PathVariable("boardId") long id, Model model) {
+//        List<PostResponseDto> posts = postService.findAll()
+//                .stream()
+//                .map(PostResponseDto::new)
+//                .toList();
+//
+//        model.addAttribute("posts", posts);
+//
+//        return "board/board";
+//    }
 
     // 개별 게시글 조회
     @GetMapping("/posts/{postId}")
