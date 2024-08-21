@@ -28,7 +28,7 @@ public class BoardController {
         return "board/boards";
     }
 
-//    // 게시판 ID로 조회
+    // 게시판 ID로 조회
     @GetMapping("/{id}")
     public String getBoardById(@PathVariable Long id) {
         BoardDTO board = boardService.getBoardById(id);
