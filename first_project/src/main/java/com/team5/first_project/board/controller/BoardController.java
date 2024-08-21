@@ -29,7 +29,7 @@ public class BoardController {
     // 모든 게시판 조회
     @GetMapping
     public String getAllBoards(Model model) {
-        List<BoardDTO> boards = boardService.getAllBoards();
+        List<Board> boards = boardService.getAllBoards();
         model.addAttribute("boards", boards);
         return "board/boards";
     }
@@ -38,13 +38,9 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public String getBoardById(@PathVariable("boardId") Long id, Model model) {
         Board board = boardService.getBoardById(id);
+        List<PostResponseDto> posts = postService.findAll();
+
         model.addAttribute("board", board);
-
-        List<PostResponseDto> posts = postService.findAll()
-                .stream()
-                .map(PostResponseDto::new)
-                .toList();
-
         model.addAttribute("postPage", posts);
         return "board/board";
     }
@@ -68,7 +64,7 @@ public class BoardController {
     // 게시판 수정
     @GetMapping("/{id}/edit")
     public String editBoard(@PathVariable("id") Long id, Model model) {
-        Board board =boardService.getBoardById(id);
+        Board board = boardService.getBoardById(id);
         model.addAttribute("board", board);
         return "board/editBoard";
     }
@@ -79,14 +75,6 @@ public class BoardController {
                                 @RequestParam("name") String name,
                                 @RequestParam("type") String type) {
         boardService.updateBoard(id, description, name, type);
-        return "redirect:/boards";
-    }
-
-    // 게시판 삭제
-    @DeleteMapping("/{boardId}/delete")
-    public String deleteBoard(@PathVariable("boardId") Long id) {
-        boardService.deleteBoard(id);
-        System.out.println("BoardController.deleteBoard");
         return "redirect:/boards";
     }
 
