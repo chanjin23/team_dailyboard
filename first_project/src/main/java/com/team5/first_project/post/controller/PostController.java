@@ -58,7 +58,7 @@ public class PostController {
         //model.addAttribute("comments", new ArrayList<>());
         // Comments (comment 원소) 리스트타입을 model.addAttribute();
 
-        return "post/test";
+        return "post/post";
     }
 
 
@@ -66,7 +66,7 @@ public class PostController {
     @GetMapping("/post/{id}/edit")
     public String editPage(@PathVariable("id") Long id, Model model){
         Post post = postService.findById(id);
-        model.addAttribute("post", new PostResponseDto[post]);
+        model.addAttribute("post", new PostResponseDto(post));
         return "editPost";
     }
 
@@ -80,7 +80,7 @@ public class PostController {
 
     // 게시글 삭제
     @DeleteMapping("posts/{postId}")
-    public String deletePost(@PathVariable("id") long id) {
+    public String deletePost(@PathVariable("postId") long id) {
         postService.delete(id);
         return "redirect:/posts";
     }
