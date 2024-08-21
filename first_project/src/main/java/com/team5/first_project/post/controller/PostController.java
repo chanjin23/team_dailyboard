@@ -37,7 +37,7 @@ public class PostController {
             return "post/createPost";
         }
         PostResponseDto postResponseDto = postService.createPost(id, postRequestDto);
-        return "redirect:/boards" + id;
+        return "redirect:/boards/" + id;
     }
 
 //    // 전체 게시글 조회
@@ -67,7 +67,7 @@ public class PostController {
 
 
     // 게시글 수정
-    @GetMapping("/post/{postId}/edit")
+    @GetMapping("/posts/{postId}/edit")
     public String editPage(@PathVariable("postId") Long id, Model model){
         Post post = postService.findById(id);
         model.addAttribute("post", new PostResponseDto(post));
@@ -75,11 +75,11 @@ public class PostController {
     }
 
     // @AuthenticationPrincipal
-    @PostMapping("/post/{postId}/edit")
+    @PostMapping("/posts/{postId}/edit")
     public String updatePost(@PathVariable("postId") Long id,
                                        @Valid @ModelAttribute PostRequestDto requestDto){
         PostResponseDto postResponseDto = postService.updatePost(id, requestDto);
-        return "redirect:boards" + postResponseDto.getBoardId();
+        return "redirect:/boards/" + postResponseDto.getBoardId();
     }
 
     // 게시글 삭제
