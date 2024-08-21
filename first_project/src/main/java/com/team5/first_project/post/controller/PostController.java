@@ -36,7 +36,7 @@ public class PostController {
         if(bindingResult.hasErrors()){
             return "post/createPost";
         }
-        PostResponseDto postResponseDto = postService.createPost(id, postRequestDto);
+        PostResponseDto postResponseDto = postService.createPost(id);
         return "redirect:/boards/" + id;
     }
 
