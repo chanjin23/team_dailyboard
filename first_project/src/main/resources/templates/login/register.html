@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- 스타일 시트 링크 -->
+</head>
+<body>
+<div class="register">
+    <h1 class="title">회원가입</h1>
+    <hr>
+    <form th:action="@{/members/create}" th:object="${memberPostDto}" method="post">
+        <p class="name">
+            이름: <input type="text" th:field="*{name}" placeholder="이름을 입력하세요" required />
+        </p>
+        <p class="email">
+            이메일: <input type="email" th:field="*{email}" placeholder="이메일을 입력하세요" required />
+        </p>
+        <p class="password">
+            비밀번호: <input type="password" th:field="*{password}" placeholder="비밀번호를 입력하세요" required />
+        </p>
+        <p class="button">
+            <button type="submit">가입하기</button>
+        </p>
+    </form>
+    <p>
+        <button class="button" onclick="location.href='@{/login}'">로그인 페이지</button>
+    </p>
+    <hr>
+</div>
+</body>
+</html>

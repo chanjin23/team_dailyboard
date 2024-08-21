@@ -1,18 +1,19 @@
 package com.team5.first_project.board.repository;
 
 import com.team5.first_project.board.entity.Board;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BoardRepository {
-    List<Board> findAll();
-
-    Optional<Board> findById(Long id);
-
-    Board save(Board board);
-
-    void deleteById(Long id);
-
-    List<Board> findByType(String type);
+public interface BoardRepository extends JpaRepository<Board, Long> {
+//    List<Board> findAll();
+//
+//    Optional<Board> findById(Long id);
+//
+//    Board save(Board board);
+//
+//    void deleteById(Long id);
+//
+   List<Board> findByType(String type);
 }

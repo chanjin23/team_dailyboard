@@ -2,25 +2,30 @@ package com.team5.first_project.board.controller;
 
 import com.team5.first_project.board.dto.BoardDTO;
 import com.team5.first_project.board.service.BoardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/boards")
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/boards")
 public class BoardController {
-    @Autowired
-    private BoardService boardService;
+
+    private final BoardService boardService;
 
     // 모든 게시판 조회
     @GetMapping
-    public ResponseEntity<List<BoardDTO>> getAllBoards() {
+    public String getAllBoards(Model model) {
         List<BoardDTO> boards = boardService.getAllBoards();
-        return new ResponseEntity<>(boards, HttpStatus.OK);
+        model.addAttribute("boards", boards);
+        return "board/boards";
     }
 
     // 게시판 ID로 조회

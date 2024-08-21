@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 public class Member extends Timestamp {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,7 +31,17 @@ public class Member extends Timestamp {
     @Column(nullable = false, unique = true)
     private String password;
 
+    public Member(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+
+
+
 //    @Column(nullable = false)
 //    @Enumerated(value = EnumType.STRING)
 //    private MemberRoleEnum role;
 }
+
