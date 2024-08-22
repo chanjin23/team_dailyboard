@@ -1,5 +1,7 @@
 package com.team5.first_project.member.entity;
 
+import com.team5.first_project.member.dto.MemberLogInRequestDto;
+import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.timestamp.Timestamp;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +16,6 @@ import lombok.Setter;
 @Setter
 public class Member extends Timestamp {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,25 +23,36 @@ public class Member extends Timestamp {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String nickname;
+    @Column(name = "nickname", nullable = false, unique = true)
+    private String nickName;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String password;
 
-    public Member(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
+    //    @Column(nullable = false)
+    //    @Enumerated(value = EnumType.STRING)
+    //    private MemberRoleEnum role;
+
+    public Member(MemberPostDto memberPostDto){
+        this.name = memberPostDto.getName();
+        this.nickName = memberPostDto.getNickName();
+        this.email = memberPostDto.getEmail();
+        this.password = memberPostDto.getPassword();
     }
 
+//    public Member(MemberLogInRequestDto memberLogInRequestDto){
+//        this.email = memberLogInRequestDto.getEmail();
+//        this.password = memberLogInRequestDto.getPassword();
+//    }
 
+    public void toEntity(MemberPostDto memberPostDto){
+        this.name = memberPostDto.getName();
+        this.nickName = memberPostDto.getNickName();
+        this.email = memberPostDto.getEmail();
+        this.password = memberPostDto.getPassword();
+    }
 
-
-//    @Column(nullable = false)
-//    @Enumerated(value = EnumType.STRING)
-//    private MemberRoleEnum role;
 }
