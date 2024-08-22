@@ -38,7 +38,7 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public String getBoardById(@PathVariable("boardId") Long id, Model model) {
         Board board = boardService.getBoardById(id);
-        List<PostResponseDto> filterPosts = postService.findAll(id)
+        List<PostResponseDto> filterPosts = postService.findAll()
                         .stream()
                         .filter(p -> p.getBoardId().equals(id))
                         .toList();
