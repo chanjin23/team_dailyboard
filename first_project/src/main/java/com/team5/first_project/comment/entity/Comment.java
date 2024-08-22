@@ -1,7 +1,6 @@
 package com.team5.first_project.comment.entity;
 
-import com.team5.first_project.comment.dto.CommentPostDto;
-import com.team5.first_project.comment.dto.CommentResponseDto;
+import com.team5.first_project.comment.dto.CommentRequestDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.timestamp.Timestamp;
@@ -33,9 +32,9 @@ public class Comment extends Timestamp {
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    public Comment(Post post, CommentPostDto commentPostDto) {
+    public Comment(Post post, CommentRequestDto commentRequestDto) {
         this.post = post;
-        this.content = commentPostDto.getContent();
+        this.content = commentRequestDto.getContent();
     }
 
 //    public CommentResponseDto toCommentResponseDto() {

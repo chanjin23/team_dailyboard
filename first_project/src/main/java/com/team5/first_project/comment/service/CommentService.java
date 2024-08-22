@@ -1,6 +1,6 @@
 package com.team5.first_project.comment.service;
 
-import com.team5.first_project.comment.dto.CommentPostDto;
+import com.team5.first_project.comment.dto.CommentRequestDto;
 import com.team5.first_project.comment.dto.CommentResponseDto;
 import com.team5.first_project.comment.entity.Comment;
 import com.team5.first_project.comment.repository.CommentRepository;
@@ -21,10 +21,10 @@ public class CommentService {
 
     // 댓글 생성
     @Transactional
-    public void createComment(long id, CommentPostDto commentPostDto) {
+    public void createComment(long id, CommentRequestDto commentRequestDto) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->new IllegalArgumentException("존재하지 않는 게시글입니다."));;
-        Comment comment = new Comment(post, commentPostDto);
+        Comment comment = new Comment(post, commentRequestDto);
         commentRepository.save(comment);
     }
 
@@ -44,11 +44,10 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(long id, CommentPostDto commentPostDto){
+    public CommentResponseDto updateComment(long id, CommentRequestDto commentRequestDto){
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
-        comment.setContent(commentPostDto.getContent());
-        commentRepository.save(comment);
+        comment.setContent(commentRequestDto.getContent());
         return new CommentResponseDto(comment);
     }
 

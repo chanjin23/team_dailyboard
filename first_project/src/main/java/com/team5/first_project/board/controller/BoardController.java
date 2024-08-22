@@ -39,9 +39,10 @@ public class BoardController {
     public String getBoardById(@PathVariable("boardId") Long id, Model model) {
         Board board = boardService.getBoardById(id);
         List<PostResponseDto> filterPosts = postService.findAll()
-                        .stream()
-                        .filter(p -> p.getBoardId().equals(id))
-                        .toList();
+                .stream()
+                .filter((p) -> p.getBoardId().equals(id))
+                .toList();
+
         model.addAttribute("board", board);
         model.addAttribute("postPage", filterPosts);
         return "board/board";
