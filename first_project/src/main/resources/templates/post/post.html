@@ -42,7 +42,7 @@
     <a
             class="link link-offset-1 link-offset-2-hover text-sm fs-6 mb-2 d-block"
             style="transition: all 0.1s ease-in-out"
-            th:href="@{/boards/{boardId}(boardId=${post.board.id})}"
+            th:href="@{/boards/{boardId}(boardId=${post.boardId})}"
     >&larr; 게시판으로 돌아가기</a
     >
     <div class="container border rounded p-4 position-relative">
@@ -143,7 +143,7 @@
                             class="dropdown-item text-danger btn btn-danger d-flex align-items-center gap-2"
                             data-bs-toggle="modal"
                             data-bs-target="#deletePostModal"
-                            th:onclick="handleDeletePostButton(event, [[${post.id}]], [[${post.board.id}]]);"
+                            th:onclick="handleDeletePostButton(event, [[${post.id}]], [[${post.boardId}]]);"
                     >
                         <span class="material-symbols-outlined"> delete </span>삭제
                     </button>

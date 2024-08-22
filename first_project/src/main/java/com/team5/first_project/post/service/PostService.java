@@ -58,6 +58,7 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
+
     // 게시글 삭제
     @Transactional
     public void delete(long id) {
