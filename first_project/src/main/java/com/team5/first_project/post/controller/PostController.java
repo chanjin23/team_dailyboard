@@ -78,7 +78,7 @@ public class PostController {
     // @AuthenticationPrincipal
     @PostMapping("/posts/{postId}/edit")
     public String updatePost(@PathVariable("postId") Long id,
-                                       @Valid @ModelAttribute PostRequestDto requestDto){
+                             @Valid @ModelAttribute PostRequestDto requestDto){
         PostResponseDto postResponseDto = postService.updatePost(id, requestDto);
         return "redirect:/boards/" + postResponseDto.getBoardId();
     }

@@ -26,6 +26,7 @@ public class BoardService {
     /**
      * 모든 게시판 조회
      */
+    @Transactional
     public List<Board> getAllBoards() {
         return boardRepository.findAll();
     }
@@ -33,6 +34,7 @@ public class BoardService {
     /**
      * 특정 게시판 조회
      */
+    @Transactional
     public Board getBoardById(Long id) {
         return boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(
@@ -43,6 +45,7 @@ public class BoardService {
     /**
      * 게시판 저장 (Create)
      */
+    @Transactional
     public ResponseBoardDto saveBoard(String name, String description, String type) {
         RequestBoardDto requestBoardDto = new RequestBoardDto(name, description, type);
         Board board = requestBoardDto.toEntity(requestBoardDto);
@@ -55,6 +58,7 @@ public class BoardService {
     /**
      * 게시판 삭제
      */
+    @Transactional
     public void deleteBoard(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("d"));
@@ -65,6 +69,7 @@ public class BoardService {
     /**
      * 게시판 타입으로 조회
      */
+    @Transactional
     public List<BoardDTO> getBoardsByType(String type) {
         return boardRepository.findByType(type).stream()
                 .map(this::convertToDTO)
@@ -81,6 +86,7 @@ public class BoardService {
         return new Board(boardDTO.getId(), boardDTO.getName(), boardDTO.getDescription(), boardDTO.getType(), null);
     }
 
+    @Transactional
     public Board findById(Long id) {
         return boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(

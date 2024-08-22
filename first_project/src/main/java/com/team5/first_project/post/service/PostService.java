@@ -55,6 +55,7 @@ public class PostService {
                 () -> new IllegalArgumentException("해당 게시글은 존재하지 않는 게시글입니다.")
         );
         post.update(requestDto);
+        postRepository.save(post);
         return new PostResponseDto(post);
     }
 
