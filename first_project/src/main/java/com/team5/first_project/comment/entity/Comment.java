@@ -30,14 +30,15 @@ public class Comment extends Timestamp {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    public Comment(String content) {
-        this.content = content;
+    public Comment(Post post, CommentPostDto commentPostDto) {
+        this.post = post;
+        this.content = commentPostDto.getContent();
     }
 
-    public CommentResponseDto toCommentResponseDto() {
-        return new CommentResponseDto(id,content);
-    }
+//    public CommentResponseDto toCommentResponseDto() {
+//        return new CommentResponseDto(id,content);
+//    }
 }

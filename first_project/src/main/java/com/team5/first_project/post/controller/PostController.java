@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -59,7 +60,7 @@ public class PostController {
         Post post = postService.findById(id);
 
         model.addAttribute("post", new PostResponseDto(post));
-        //model.addAttribute("comments", new ArrayList<>());
+        model.addAttribute("comments", new PostResponseDto(post).getComments());
         // Comments (comment 원소) 리스트타입을 model.addAttribute();
 
         return "post/post";
@@ -83,10 +84,10 @@ public class PostController {
     }
 
     // 게시글 삭제
-    @PostMapping("posts/{postId}")
-    public String deletePost(@PathVariable("postId") long id) {
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable("postId") long id) {
         postService.delete(id);
-        return "redirect:/posts";
+        return ResponseEntity.noContent().build(); // 204 No Content 응답을 반환
     }
 
 }
