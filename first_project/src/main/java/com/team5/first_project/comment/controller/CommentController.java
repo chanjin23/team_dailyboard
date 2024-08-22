@@ -1,19 +1,13 @@
 package com.team5.first_project.comment.controller;
 
-import com.team5.first_project.comment.dto.CommentPostDto;
+import com.team5.first_project.comment.dto.CommentRequestDto;
 import com.team5.first_project.comment.dto.CommentResponseDto;
-import com.team5.first_project.comment.entity.Comment;
 import com.team5.first_project.comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,16 +37,16 @@ public class CommentController {
     // 댓글 생성
     @PostMapping("/comments")
     public String createComment(@RequestParam("postId") long id,
-                                @Valid @ModelAttribute CommentPostDto commentPostDto) {
-        commentService.createComment(id, commentPostDto);
+                                @Valid @ModelAttribute CommentRequestDto commentRequestDto) {
+        commentService.createComment(id, commentRequestDto);
         return "redirect:/posts/" + id;
     }
 
     // 댓글 수정
     @PostMapping("/comments/{commentId}/edit")
     public String updateComment(@PathVariable("commentId") long id,
-                                @Valid @ModelAttribute CommentPostDto commentPostDto) {
-        CommentResponseDto commentResponseDto = commentService.updateComment(id, commentPostDto);
+                                @Valid @ModelAttribute CommentRequestDto commentRequestDto) {
+        CommentResponseDto commentResponseDto = commentService.updateComment(id, commentRequestDto);
         return "redirect:/posts/" + commentResponseDto.getPostId();
     }
 }
