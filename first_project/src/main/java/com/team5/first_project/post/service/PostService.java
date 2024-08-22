@@ -7,9 +7,14 @@ import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,15 +34,31 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    // 게시글 조회
-    // 전체 게시글 조회
+
+     // 게시글 조회
+     // 전체 게시글 조회
     @Transactional
-    public List<PostResponseDto> findAll() {
-        return postRepository.findAll()
-                .stream()
-                .map(PostResponseDto::new)
-                .toList();
+    public Page<Post> findAll(Board board, Pageable pageable) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdTime"));
+        pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by(sorts));
+
+        return postRepository.findAllByBoard(board, pageable);
+//                .stream()
+//                .filter((p)->p.getBoard().getId().equals(boardId));
     }
+
+
+        // 게시글 조회
+//    // 전체 게시글 조회
+//    @Transactional
+//    public List<PostResponseDto> findAll(Long boardId) {
+//        return postRepository.findAll()
+//                .stream()
+//                .filter((p)->p.getBoard().getId().equals(boardId))
+//                .map(PostResponseDto::new)
+//                .toList();
+//    }
 
 
     // 개별 게시글 조회

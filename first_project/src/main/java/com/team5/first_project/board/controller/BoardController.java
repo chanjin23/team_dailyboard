@@ -5,8 +5,11 @@ import com.team5.first_project.board.dto.ResponseBoardDto;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.post.dto.PostResponseDto;
+import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,17 +34,28 @@ public class BoardController {
 
     // 특정 게시판 ID로 조회
     @GetMapping("/{boardId}")
-    public String getBoardById(@PathVariable("boardId") Long id, Model model) {
+    public String getBoardById(@PathVariable("boardId") Long id,
+                               Pageable pageable,
+                               Model model) {
         Board board = boardService.getBoardById(id);
-        List<PostResponseDto> filterPosts = postService.findAll()
-                .stream()
-                .filter((p) -> p.getBoardId().equals(id))
-                .toList();
+        Page<Post> filterPosts = postService.findAll(board, pageable);
 
         model.addAttribute("board", board);
         model.addAttribute("postPage", filterPosts);
         return "board/board";
     }
+
+    // 특정 게시판 ID로 조회
+//    @GetMapping("/{boardId}")
+//    public String getBoardById(@PathVariable("boardId") Long id, Model model) {
+//        Board board = boardService.getBoardById(id);
+//        List<PostResponseDto> filterPosts = postService.findAll(id);
+//
+//        model.addAttribute("board", board);
+//        model.addAttribute("postPage", filterPosts);
+//        return "board/board";
+//    }
+
 
     // 게시판 생성
     @GetMapping("/create")
