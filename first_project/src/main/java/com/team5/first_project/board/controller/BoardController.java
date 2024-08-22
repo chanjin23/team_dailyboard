@@ -1,6 +1,5 @@
 package com.team5.first_project.board.controller;
 
-import com.team5.first_project.board.dto.BoardDTO;
 import com.team5.first_project.board.dto.RequestBoardDto;
 import com.team5.first_project.board.dto.ResponseBoardDto;
 import com.team5.first_project.board.entity.Board;
@@ -8,15 +7,11 @@ import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,7 +29,7 @@ public class BoardController {
         return "board/boards";
     }
 
-    // 게시판 ID로 조회
+    // 특정 게시판 ID로 조회
     @GetMapping("/{boardId}")
     public String getBoardById(@PathVariable("boardId") Long id, Model model) {
         Board board = boardService.getBoardById(id);
@@ -54,6 +49,7 @@ public class BoardController {
         return "board/createBoard";
     }
 
+    // 게시판 생성
     @PostMapping("/create")
     public String createBoard(@RequestParam("name") String name,
                               @RequestParam("description") String description,
@@ -64,7 +60,7 @@ public class BoardController {
         return "redirect:/boards";
     }
 
-    // 게시판 수정
+    // 게시판 수정 폼 조회
     @GetMapping("/{id}/edit")
     public String editBoard(@PathVariable("id") Long id, Model model) {
         Board board = boardService.getBoardById(id);
@@ -72,6 +68,7 @@ public class BoardController {
         return "board/editBoard";
     }
 
+    //게시판 수정
     @PostMapping("/{id}/edit")
     public String editBoardPage(@PathVariable("id") Long id,
                                 @RequestParam("description") String description,
@@ -81,11 +78,4 @@ public class BoardController {
         return "redirect:/boards";
     }
 
-    // 게시판 타입으로 조회
-
-    @GetMapping("/type/{type}")
-    public ResponseEntity<List<BoardDTO>> getBoardsByType(@PathVariable String type) {
-        List<BoardDTO> boards = boardService.getBoardsByType(type);
-        return new ResponseEntity<>(boards, HttpStatus.OK);
-    }
 }
