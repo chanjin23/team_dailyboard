@@ -32,7 +32,7 @@ public class PostService {
     // 게시글 조회
     // 전체 게시글 조회
     @Transactional
-    public List<PostResponseDto> findAll() {
+    public List<PostResponseDto> findAll(Long id) {
         return postRepository.findAll()
                 .stream()
                 .map(PostResponseDto::new)

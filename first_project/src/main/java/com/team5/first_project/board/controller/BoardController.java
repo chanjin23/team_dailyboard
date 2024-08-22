@@ -38,10 +38,12 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public String getBoardById(@PathVariable("boardId") Long id, Model model) {
         Board board = boardService.getBoardById(id);
-        List<PostResponseDto> posts = postService.findAll();
-
+        List<PostResponseDto> filterPosts = postService.findAll(id)
+                        .stream()
+                        .filter(p -> p.getBoardId().equals(id))
+                        .toList();
         model.addAttribute("board", board);
-        model.addAttribute("postPage", posts);
+        model.addAttribute("postPage", filterPosts);
         return "board/board";
     }
 
