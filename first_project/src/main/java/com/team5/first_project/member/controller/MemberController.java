@@ -1,10 +1,12 @@
 package com.team5.first_project.member.controller;
 
+import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.member.dto.MemberLogInRequestDto;
 import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.member.dto.MemberResponseDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final BoardService boardService;
 
     //모든 회원 조회
     @GetMapping
@@ -85,7 +88,9 @@ public class MemberController {
             return "redirect:/boards";
         } else {
             model.addAttribute("error", "이메일 또는 비밀번호가 일치하지 않습니다.");
-            return "redirect:/boards";
+            model.addAttribute("loginError", true); // 자바스크립트로 모달 표시를 위한 플래그
+            model.addAttribute("boards", boardService.getAllBoards());
+            return "board/boards";
         }
     }
 
