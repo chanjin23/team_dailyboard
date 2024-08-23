@@ -1,5 +1,6 @@
 package com.team5.first_project.comment.service;
 
+import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.comment.dto.CommentRequestDto;
 import com.team5.first_project.comment.dto.CommentResponseDto;
 import com.team5.first_project.comment.entity.Comment;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -26,12 +28,6 @@ public class CommentService {
                 .orElseThrow(() ->new IllegalArgumentException("존재하지 않는 게시글입니다."));;
         Comment comment = new Comment(post, commentRequestDto);
         commentRepository.save(comment);
-    }
-
-    // 댓글 전체 조회
-    @Transactional
-    public List<Comment> findAllComments() {
-        return commentRepository.findAll();
     }
 
     // 댓글 개별 조회
@@ -55,5 +51,12 @@ public class CommentService {
     @Transactional
     public void deleteComment(long id) {
         commentRepository.deleteById(id);
+    }
+
+
+    public List<Comment> orderComment(List<Comment> comments) {
+        comments.sort(Comparator.comparing(Comment::getCreatedTime).reversed());
+
+        return comments;
     }
 }
