@@ -28,6 +28,7 @@ public class PostResponseDto {
     private LocalDateTime recentTime;
     private List<Comment> comments;
     private Long boardId;
+    private int view;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -38,6 +39,7 @@ public class PostResponseDto {
         this.recentTime = post.getUpdatedTime() == null ? post.getCreatedTime() : post.getUpdatedTime();
         this.comments = post.getCommentList();
         this.boardId = post.getBoard().getId();
+        this.view = post.getView();
     }
 
 }

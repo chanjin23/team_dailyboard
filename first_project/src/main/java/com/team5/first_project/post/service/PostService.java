@@ -56,6 +56,11 @@ public class PostService {
         return postRepository.findAllByBoard(board, pageable);
     }
 
+    @Transactional
+    public int updateView(Long id) {
+        return postRepository.updateView(id);
+    }
+
 
     // 게시글 조회
 //    // 전체 게시글 조회

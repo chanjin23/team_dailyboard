@@ -68,11 +68,13 @@ public class PostController {
     public String getPost(@PathVariable("postId") long id,
                           Model model) {
         Post post = postService.findById(id);
+        postService.updateView(id);
         List<Comment> comments = new PostResponseDto(post).getComments();
         List<Comment> orderComments = commentService.orderComment(comments);
 
         model.addAttribute("post", new PostResponseDto(post));
         model.addAttribute("comments", orderComments);
+        model.addAttribute("member", post.getMember());
         // Comments (comment 원소) 리스트타입을 model.addAttribute();
 
         return "post/post";
