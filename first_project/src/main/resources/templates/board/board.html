@@ -71,6 +71,7 @@
             <small class="text-secondary" th:text="${post.createdTime}"
             >게시글 생성일</small
             >
+            <p th:text="${post.member.nickName}">게시글 작성자</p>
         </a>
         <span
                 th:if="${postPage.isEmpty()}"

@@ -1,6 +1,7 @@
 package com.team5.first_project.post.service;
 
 import com.team5.first_project.board.repository.BoardRepository;
+import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.dto.PostRequestDto;
 import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.entity.Post;
@@ -26,10 +27,10 @@ public class PostService {
 
     // 게시글 생성
     @Transactional
-    public PostResponseDto createPost(long id, PostRequestDto postRequestDto){
+    public PostResponseDto createPost(long id, PostRequestDto postRequestDto, Member member){
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
-        Post post = new Post(board, postRequestDto);
+        Post post = new Post(board, postRequestDto, member);
         postRepository.save(post);
         return new PostResponseDto(post);
     }

@@ -2,10 +2,12 @@ package com.team5.first_project.post.controller;
 
 import com.team5.first_project.comment.entity.Comment;
 import com.team5.first_project.comment.service.CommentService;
+import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.dto.PostRequestDto;
 import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.service.PostService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,12 +39,14 @@ public class PostController {
     @PostMapping("/posts/create")
     public String createPost(@RequestParam("boardId") long id,
                              @Valid @ModelAttribute PostRequestDto postRequestDto,
-                             BindingResult bindingResult) {
+                             BindingResult bindingResult,
+                             HttpSession session) {
         // 오류가 나면 다시 생성으로
         if (bindingResult.hasErrors()) {
             return "post/createPost";
         }
-        PostResponseDto postResponseDto = postService.createPost(id, postRequestDto);
+        Member member = (Member) session.getAttribute("member");
+        PostResponseDto postResponseDto = postService.createPost(id, postRequestDto, member);
         return "redirect:/boards/" + id;
     }
 
