@@ -73,6 +73,7 @@ public class PostController {
 
         model.addAttribute("post", new PostResponseDto(post));
         model.addAttribute("comments", orderComments);
+        model.addAttribute("member", post.getMember());
         // Comments (comment 원소) 리스트타입을 model.addAttribute();
 
         return "post/post";
