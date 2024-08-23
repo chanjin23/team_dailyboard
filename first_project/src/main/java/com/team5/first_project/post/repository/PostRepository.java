@@ -17,4 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     //@Query("SELECT p FROM Post p WHERE p.board.id = :boardId AND (p.title LIKE %:keyword1% OR p.content LIKE %:keyword2%)")
     //Page<Post> findByBoardIdAndTitleContainingOrContentContaining(@Param("boardId") Long boardId, String keyword1, String keyword2, Pageable pageable);
+
+    Page<Post> findByBoardAndTitleContainingOrBoardAndContentContaining(
+            Board board1, String keyword1, Board board2, String keyword2, Pageable pageable);
 }

@@ -35,18 +35,18 @@ public class PostService {
     }
 
     // 키워드 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<Post> findKeyword(Board board, String keyword, Pageable pageable) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdTime"));
         pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by(sorts));
 
-        return postRepository.findByBoardAndTitleContainingOrContentContaining(board, keyword, keyword, pageable);
+        return postRepository.findByBoardAndTitleContainingOrBoardAndContentContaining(board, keyword, board, keyword, pageable);
     }
 
     // 게시글 조회
     // 전체 게시글 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<Post> findAll(Board board, Pageable pageable) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdTime"));
