@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -49,8 +49,11 @@
         <div class="header mb-3">
             <h2 class="text-start" th:text="${post.title}">게시글 제목</h2>
         </div>
+        <p th:if="${member!=null}" th:text="|작성자 : ${member.nickName}|">닉네임</p>
+        <p th:if="${member==null}">비회원</p>
+        <p style="text-align: right;" th:text="|조회수 : ${post.view}|">1</p>
         <p class="m-0" th:text="${post.content}">게시글 내용</p>
-        <hr class="mt-4" />
+        <hr class="mt-4"/>
         <h4 class="mb-3">
             댓글
             <small
@@ -72,7 +75,8 @@
                 <div class="card-body position-relative">
                     <p class="mb-2" th:text="${comment.content}">댓글 내용</p>
                     <small class="text-secondary" th:text="${comment.createdTime}">2024-01-04T13:21:21</small>
-                    <p th:text="${comment.member.nickName}">댓글 작성자</p>
+                    <p th:if="${member!=null}" th:text="|작성자 : ${member.nickName}|">댓글 작성자</p>
+                    <p th:if="${member==null}">비회원</p>
                     <div
                             class="position-absolute end-0 top-50 translate-middle-y mb-3 me-3 btn-group bg-white bg-opacity-75"
                             role="group"

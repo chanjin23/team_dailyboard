@@ -85,7 +85,7 @@ public class MemberController {
             return "redirect:/boards";
         } else {
             model.addAttribute("error", "이메일 또는 비밀번호가 일치하지 않습니다.");
-            return "member/logIn";
+            return "redirect:/boards";
         }
     }
 
