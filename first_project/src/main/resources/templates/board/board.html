@@ -81,8 +81,15 @@
     </div>
     <div class="w-100 d-flex justify-content-center">
         <ul class="pagination">
+            <li class="page-item" th:classappend="${!postPage.hasPrevious()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/boards/{boardId}(boardId=${board.id}, page=${postPage.number - 1}, size=${postPage.size}, keyword=${keyword})}">
+                    <span>이전</span>
+                </a>
+            </li>
             <li
                     th:each="i : ${postPage.totalPages > 1 ? #numbers.sequence(0, postPage.totalPages - 1) : #numbers.sequence(0, 0)}"
+                    th:if="${i >= postPage.number-2 and i <= postPage.number+2}"
                     class="page-item"
                     th:classappend="${i == postPage.number ? 'active' : ''}"
             >
@@ -92,6 +99,12 @@
                         th:text="${i + 1}"
                 >0</a
                 >
+            </li>
+            <li class="page-item" th:classappend="${!postPage.hasNext()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/boards/{boardId}(boardId=${board.id}, page=${postPage.number + 1}, size=${postPage.size}, keyword=${keyword})}">
+                    <span>다음</span>
+                </a>
             </li>
         </ul>
     </div>
