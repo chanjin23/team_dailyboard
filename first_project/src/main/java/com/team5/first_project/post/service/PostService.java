@@ -35,8 +35,8 @@ public class PostService {
     }
 
 
-     // 게시글 조회
-     // 전체 게시글 조회
+    // 게시글 조회
+    // 전체 게시글 조회
     @Transactional
     public Page<Post> findAll(Board board, Pageable pageable) {
         List<Sort.Order> sorts = new ArrayList<>();
@@ -49,7 +49,7 @@ public class PostService {
     }
 
 
-        // 게시글 조회
+    // 게시글 조회
 //    // 전체 게시글 조회
 //    @Transactional
 //    public List<PostResponseDto> findAll(Long boardId) {
