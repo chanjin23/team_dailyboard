@@ -1,5 +1,7 @@
 package com.team5.first_project.member.service;
 
+import com.team5.first_project.member.dto.MemberLogInRequestDto;
+import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,22 +20,54 @@ public class MemberService {
     //모든 회원 조회
     public List< Member> findAllMembers(){
         return memberRepository.findAll();}
-    //ID로 회원 조회
+
+    // ID로 회원 조회
     public Member getMemberById(Long id){
-        return (Member) memberRepository.findById(id)
+        return memberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
+        // RuntimeException인지 확인 필요
     }
-    //새 회원 생성
+
+    // 회원가입
     @Transactional
-    public Member createMember(Member member) {
+    public void signUp(MemberPostDto memberPostDto) {
         //member.setPassword(passwordEncoder.encode(member.getPassword()));
-        return memberRepository.save(member);
+        Member member = new Member(memberPostDto);
+        memberRepository.save(member);
     }
-    //회원 정보 업데이트
+
+    // 회원가입 시 동일한 닉네임이나 이메일을 사용했는지 검증
+    public boolean isNickNameUnique(String nickName){
+        return memberRepository.existsByNickName(nickName);
+    }
+
+    public boolean isEmailUnique(String email){
+        return memberRepository.existsByEmail(email);
+    }
+
+    // 로그인
+    public Member logIn(MemberLogInRequestDto memberLogInRequestDto){
+        return memberRepository.findByEmail(memberLogInRequestDto.getEmail())
+                .filter((m)->m.getPassword().equals(memberLogInRequestDto.getPassword()))
+                .orElse(null);
+    }
+
+    // 회원 정보 수정
     @Transactional
-    public Member updateMember(Member member){
-        getMemberById(member.getId());
-        return memberRepository.save(member);
+    public void updateMember(long id, MemberPostDto memberPostDto) {
+
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        // 조회한 회원 객체의 필드를 업데이트
+        member.toEntity(memberPostDto);
+    }
+
+    // 회원 탈퇴
+    @Transactional
+    public void deleteMember(Long id) {
+        // 회원이 존재하지 않는 경우 예외를 던질 수도 있지만, 여기서는 무시합니다.
+            memberRepository.deleteById(id);
     }
 }
 
