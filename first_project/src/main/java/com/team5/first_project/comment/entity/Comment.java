@@ -32,9 +32,10 @@ public class Comment extends Timestamp {
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
-    public Comment(Post post, CommentRequestDto commentRequestDto) {
+    public Comment(Post post, CommentRequestDto commentRequestDto, Member member) {
         this.post = post;
         this.content = commentRequestDto.getContent();
+        this.member = member;
     }
 
 //    public CommentResponseDto toCommentResponseDto() {

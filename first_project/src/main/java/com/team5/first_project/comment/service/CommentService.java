@@ -5,6 +5,7 @@ import com.team5.first_project.comment.dto.CommentRequestDto;
 import com.team5.first_project.comment.dto.CommentResponseDto;
 import com.team5.first_project.comment.entity.Comment;
 import com.team5.first_project.comment.repository.CommentRepository;
+import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,10 @@ public class CommentService {
 
     // 댓글 생성
     @Transactional
-    public void createComment(long id, CommentRequestDto commentRequestDto) {
+    public void createComment(long id, CommentRequestDto commentRequestDto, Member member) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->new IllegalArgumentException("존재하지 않는 게시글입니다."));;
-        Comment comment = new Comment(post, commentRequestDto);
+        Comment comment = new Comment(post, commentRequestDto, member);
         commentRepository.save(comment);
     }
 

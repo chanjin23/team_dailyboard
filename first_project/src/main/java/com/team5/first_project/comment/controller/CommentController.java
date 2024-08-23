@@ -3,6 +3,8 @@ package com.team5.first_project.comment.controller;
 import com.team5.first_project.comment.dto.CommentRequestDto;
 import com.team5.first_project.comment.dto.CommentResponseDto;
 import com.team5.first_project.comment.service.CommentService;
+import com.team5.first_project.member.entity.Member;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +39,10 @@ public class CommentController {
     // 댓글 생성
     @PostMapping("/comments")
     public String createComment(@RequestParam("postId") long id,
-                                @Valid @ModelAttribute CommentRequestDto commentRequestDto) {
-        commentService.createComment(id, commentRequestDto);
+                                @Valid @ModelAttribute CommentRequestDto commentRequestDto,
+                                HttpSession session) {
+        Member member = (Member) session.getAttribute("member");
+        commentService.createComment(id, commentRequestDto, member);
         return "redirect:/posts/" + id;
     }
 

@@ -39,10 +39,11 @@ public class Post extends Timestamp {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    public Post(Board board, PostRequestDto postRequestDto){
+    public Post(Board board, PostRequestDto postRequestDto, Member member){
         this.board = board;
         this.title = postRequestDto.getTitle();
         this.content = postRequestDto.getContent();
+        this.member = member;
     }
 
     public void update(PostRequestDto postRequestDto){
