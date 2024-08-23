@@ -90,6 +90,7 @@ public class MemberController {
             model.addAttribute("error", "이메일 또는 비밀번호가 일치하지 않습니다.");
             model.addAttribute("loginError", true); // 자바스크립트로 모달 표시를 위한 플래그
             model.addAttribute("boards", boardService.getAllBoards());
+            model.addAttribute("flag", 1);
             return "board/boards";
         }
     }
