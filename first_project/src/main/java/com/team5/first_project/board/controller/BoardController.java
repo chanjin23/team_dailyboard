@@ -52,6 +52,7 @@ public class BoardController {
         return "board/board";
     }
 
+
     // 특정 게시판 ID로 조회
 //    @GetMapping("/{boardId}")
 //    public String getBoardById(@PathVariable("boardId") Long id, Model model) {
