@@ -35,10 +35,17 @@ public class BoardController {
     // 특정 게시판 ID로 조회
     @GetMapping("/{boardId}")
     public String getBoardById(@PathVariable("boardId") Long id,
+                               @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                Pageable pageable,
                                Model model) {
         Board board = boardService.getBoardById(id);
-        Page<Post> filterPosts = postService.findAll(board, pageable);
+        Page<Post> filterPosts = null;
+        if (keyword.isEmpty()) {
+            filterPosts = postService.findAll(board, pageable);
+        } else {
+            filterPosts = postService.findKeyword(board, keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        }
 
         model.addAttribute("board", board);
         model.addAttribute("postPage", filterPosts);
