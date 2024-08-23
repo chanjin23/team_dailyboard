@@ -75,8 +75,8 @@
                 <div class="card-body position-relative">
                     <p class="mb-2" th:text="${comment.content}">댓글 내용</p>
                     <small class="text-secondary" th:text="${comment.createdTime}">2024-01-04T13:21:21</small>
-                    <p th:if="${member!=null}" th:text="|작성자 : ${member.nickName}|">댓글 작성자</p>
-                    <p th:if="${member==null}">비회원</p>
+                    <p th:if="${comment.member!=null}" th:text="|작성자 : ${comment.member.nickName}|">댓글 작성자</p>
+                    <p th:if="${comment.member==null}">비회원</p>
                     <div
                             class="position-absolute end-0 top-50 translate-middle-y mb-3 me-3 btn-group bg-white bg-opacity-75"
                             role="group"

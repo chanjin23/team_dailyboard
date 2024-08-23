@@ -51,7 +51,7 @@
 <body>
 <header>
     <!-- 로그인 버튼 -->
-    <button
+    <button th:if="${flag==1}"
             type="button"
             class="btn btn-primary"
             data-toggle="modal"
@@ -115,6 +115,12 @@
             </div>
         </div>
     </div>
+    <!-- 로그아웃 버튼 -->
+    <form th:if="${flag==0}" th:action="@{/boards/logout}" method="post">
+        <button type="submit" class="btn btn-primary">
+            로그아웃
+        </button>
+    </form>
 </header>
 <div class="container my-5">
     <div class="header mb-5">
