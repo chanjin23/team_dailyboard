@@ -4,9 +4,11 @@ import com.team5.first_project.board.dto.RequestBoardDto;
 import com.team5.first_project.board.dto.ResponseBoardDto;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.service.BoardService;
+import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.service.PostService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +28,15 @@ public class BoardController {
 
     // 모든 게시판 조회
     @GetMapping
-    public String getAllBoards(Model model) {
+    public String getAllBoards(Model model, HttpSession session) {
         List<Board> boards = boardService.getAllBoards();
+
+        Member member = (Member) session.getAttribute("member");
+        if (member == null) {
+            model.addAttribute("flag", 1);
+        } else {
+            model.addAttribute("flag", 0);
+        }
         model.addAttribute("boards", boards);
         return "board/boards";
     }
@@ -52,6 +61,13 @@ public class BoardController {
         return "board/board";
     }
 
+    //로그아웃 기능
+    @PostMapping("/logout")
+    public String memberLogoutInBoard(Model model,
+                                      HttpSession session) {
+        session.invalidate();
+        return "redirect:/boards";
+    }
 
     // 특정 게시판 ID로 조회
 //    @GetMapping("/{boardId}")
