@@ -80,7 +80,7 @@ public class PostController {
     public String updatePost(@PathVariable("postId") Long id,
                              @Valid @ModelAttribute PostRequestDto requestDto){
         PostResponseDto postResponseDto = postService.updatePost(id, requestDto);
-        return "redirect:/boards/" + postResponseDto.getBoardId();
+        return "redirect:/posts/" + id;
     }
 
     // 게시글 삭제
