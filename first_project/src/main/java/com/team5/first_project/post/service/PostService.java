@@ -41,7 +41,7 @@ public class PostService {
         sorts.add(Sort.Order.desc("createdTime"));
         pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by(sorts));
 
-        return postRepository.findByBoardAndTitleContainingOrContentContaining(board, keyword, keyword, pageable);
+        return postRepository.findByBoardAndTitleContainingOrBoardAndContentContaining(board, keyword, board, keyword, pageable);
     }
 
     // 게시글 조회
