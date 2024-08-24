@@ -30,12 +30,13 @@ public class BoardController {
     @GetMapping
     public String getAllBoards(Model model, HttpSession session) {
         List<Board> boards = boardService.getAllBoards();
-
         Member member = (Member) session.getAttribute("member");
+
         if (member == null) {
             model.addAttribute("flag", 1);
         } else {
             model.addAttribute("flag", 0);
+            model.addAttribute("member", member);
         }
         model.addAttribute("boards", boards);
         return "board/boards";

@@ -118,6 +118,12 @@
             로그아웃
         </button>
     </form>
+    <!--  개인수정 정보  -->
+    <form th:if="${flag == 0}" th:action="@{/members/edit/{id}(id=${member.id})}" method="get">
+        <button type="submit" class="btn btn-primary">
+            개인정보 수정
+        </button>
+    </form>
 </header>
 <div class="container my-5">
     <div class="header mb-5">
