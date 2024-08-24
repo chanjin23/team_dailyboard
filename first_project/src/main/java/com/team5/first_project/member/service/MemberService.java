@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class MemberService {
     //private final PasswordEncoder passwordEncoder; // 비밀번호 암호화를 위한 PasswordEncoder
 
     //모든 회원 조회
+    // 기능을 사용한다면 isDelete가 false인 것만 조회하도록 수정 필요
     public List< Member> findAllMembers(){
         return memberRepository.findAll();}
 
@@ -27,6 +29,7 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
         // RuntimeException인지 확인 필요
     }
+
 
     // 회원가입
     @Transactional
@@ -38,18 +41,17 @@ public class MemberService {
 
     // 회원가입 시 동일한 닉네임이나 이메일을 사용했는지 검증
     public boolean isNickNameUnique(String nickName){
-        return memberRepository.existsByNickName(nickName);
+        return memberRepository.existsByNickNameAndIsDeletedFalse(nickName);
     }
 
     public boolean isEmailUnique(String email){
-        return memberRepository.existsByEmail(email);
+        return memberRepository.existsByEmailAndIsDeletedFalse(email);
     }
 
     // 로그인
-    public Member logIn(MemberLogInRequestDto memberLogInRequestDto){
-        return memberRepository.findByEmail(memberLogInRequestDto.getEmail())
-                .filter((m)->m.getPassword().equals(memberLogInRequestDto.getPassword()))
-                .orElse(null);
+    public Optional<Member> logIn(MemberLogInRequestDto memberLogInRequestDto){
+        return memberRepository.findByEmailAndIsDeletedFalse(memberLogInRequestDto.getEmail())
+                .filter((m)->m.getPassword().equals(memberLogInRequestDto.getPassword()));
     }
 
     // 회원 정보 수정
@@ -64,10 +66,20 @@ public class MemberService {
     }
 
     // 회원 탈퇴
+//    @Transactional
+//    public void deleteMember(Member member) {
+//        // 회원이 존재하지 않는 경우 예외를 던질 수도 있지만, 여기서는 무시합니다.
+//            memberRepository.deleteById(member.getId());
+//    }
     @Transactional
-    public void deleteMember(Member member) {
-        // 회원이 존재하지 않는 경우 예외를 던질 수도 있지만, 여기서는 무시합니다.
-            memberRepository.deleteById(member.getId());
+    public void softDeleteMember(Long id) {
+        Optional<Member> memberOptional = memberRepository.findById(id);
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+            member.setDeleted(true);
+        } else {
+            throw new IllegalArgumentException("Member not found with id: " + id);
+        }
     }
 }
 
