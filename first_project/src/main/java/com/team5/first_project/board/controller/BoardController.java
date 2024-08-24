@@ -84,8 +84,12 @@ public class BoardController {
 
     // 게시판 생성
     @GetMapping("/create")
-    public String createBoard() {
-        return "board/createBoard";
+    public String createBoard(HttpSession session) {
+        if (boardService.administratorVerification(session)){
+            return "board/createBoard";
+        } else {
+            return "redirect:/boards";
+        }
     }
 
     // 게시판 생성
@@ -101,10 +105,15 @@ public class BoardController {
 
     // 게시판 수정 폼 조회
     @GetMapping("/{id}/edit")
-    public String editBoard(@PathVariable("id") Long id, Model model) {
-        Board board = boardService.getBoardById(id);
-        model.addAttribute("board", board);
-        return "board/editBoard";
+    public String editBoard(@PathVariable("id") Long id, Model model,
+                            HttpSession session) {
+        if (boardService.administratorVerification(session)){
+            Board board = boardService.getBoardById(id);
+            model.addAttribute("board", board);
+            return "board/editBoard";
+        } else {
+            return "redirect:/boards";
+        }
     }
 
     //게시판 수정

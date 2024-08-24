@@ -304,28 +304,57 @@
       currentBoard = boardId;
     }
 
-    function handleDeletePostModalButton() {
-      fetch(`/posts/${currentPost}`, {
-        method: "DELETE",
-      }).then(() => (window.location.href = `/boards/${currentBoard}`));
-    }
+function handleDeletePostModalButton() {
+    fetch(`/posts/${currentPost}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response.ok) {
+        window.location.href = `/boards/${currentBoard}`;
+      } else if (response.status === 403) {
+        alert("이 게시글을 삭제할 권한이 없습니다.");
+      } else {
+        alert("게시글을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("게시글을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+    });
+}
 
     function handleDeleteCommentButton(e, commentId) {
       currentComment = commentId;
       elementToDelete = e.target.closest(".card");
     }
 
-    function handleDeleteCommentModalButton() {
-      fetch(`/comments/${currentComment}`, {
-        method: "DELETE",
-      }).then(() => elementToDelete.remove());
+function handleDeleteCommentModalButton() {
+  fetch(`/comments/${currentComment}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response.ok) {
+        elementToDelete.remove();
 
-      const commentsCount = document.getElementById("commentsCount");
-      commentsCount.innerText = parseInt(commentsCount.innerText) - 1;
+        // 댓글 수 업데이트
+        const commentsCount = document.getElementById("commentsCount");
+        commentsCount.innerText = parseInt(commentsCount.innerText) - 1;
 
-      const modal = bootstrap.Modal.getInstance("#deleteCommentModal");
-      modal.hide();
-    }
+        // 모달 닫기
+        const modal = bootstrap.Modal.getInstance("#deleteCommentModal");
+        modal.hide();
+      } else if (response.status === 403) {
+        alert("이 댓글을 삭제할 권한이 없습니다.");
+      } else {
+        alert("댓글을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("댓글을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+    });
+}
+
 
     function handleEditCommentButton(_, commentId, content) {
       document.getElementById("commentContentTextarea").innerText = content;
