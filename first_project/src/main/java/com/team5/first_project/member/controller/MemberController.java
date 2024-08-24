@@ -105,12 +105,13 @@ public class MemberController {
 
     // 회원정보 수정
     @PostMapping("/edit/{id}")
-    public String updateMember(@PathVariable long id,
+    public String updateMember(@PathVariable("id") long id,
                                @Valid @ModelAttribute MemberPostDto memberPostDto,
-                               Model model) {
+                               HttpSession session) {
         memberService.updateMember(id, memberPostDto);
-        return "redirect:/members";
-        // 어디로 리다이렉트할지 미정
+        session.invalidate();
+        return "redirect:/boards";
+        // 개인 정보 수정 후 로그아웃하여 게시판으로 이동
     }
 
     // 회원 탈퇴
