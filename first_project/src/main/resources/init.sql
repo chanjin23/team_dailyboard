@@ -7,8 +7,8 @@ VALUES ('description','board','자유');
 -- insert 1 member id=1
 
 INSERT INTO member
-(created_time,updated_time,email,name,nickname,password)
-VALUES (now(),now(),'test@example.com','홍길동','monkey','1234');
+(created_time,updated_time,email,name,nickname,password, is_deleted)
+VALUES (now(),now(),'test@example.com','홍길동','monkey','1234', false);
 
 -- insert 2 member id =2
 

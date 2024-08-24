@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -60,7 +61,7 @@ public class MemberController {
         boolean isEmailUnique = memberService.isEmailUnique(memberPostDto.getEmail());
         if (!isNickNameUnique && !isEmailUnique) {
             memberService.signUp(memberPostDto);
-            return "redirect:/members/logIn";
+            return "redirect:/boards";
         } else {
             model.addAttribute("member", memberPostDto);
             if (isNickNameUnique) {
@@ -82,8 +83,9 @@ public class MemberController {
     @PostMapping("/logIn")
     public String logInRequest(@Valid @ModelAttribute MemberLogInRequestDto memberLogInRequestDto,
                                HttpSession session, Model model) {
-        Member member = memberService.logIn(memberLogInRequestDto);
-        if (member != null){
+        Optional<Member> optionalMember = memberService.logIn(memberLogInRequestDto);
+        if (optionalMember.isPresent()){
+            Member member = optionalMember.get();
             session.setAttribute("member", member);
             return "redirect:/boards";
         } else {
@@ -120,23 +122,14 @@ public class MemberController {
     }
 
     // 회원 탈퇴
-    // Resy Api 방식으로 할지 미정
     @PostMapping("/delete")
     public String deleteMember(HttpSession session, Model model){
         Member member = (Member) session.getAttribute("member");
-        memberService.deleteMember(member);
+        memberService.softDeleteMember(member.getId());
         session.invalidate();
 //        model.addAttribute("member", member);
         return "redirect:/boards"; //게시판으로 이동
     }
-
-//    // 회원 탈퇴
-//    // Resy Api 방식으로 할지 미정
-//    @PostMapping("/{id}")
-//    public String deleteMember(@PathVariable("id") Long id){
-//        memberService.deleteMember(id);
-//        return "redirect:/members/logIn";
-//    }
 
 }
 

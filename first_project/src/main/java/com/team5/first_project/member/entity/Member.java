@@ -23,14 +23,17 @@ public class Member extends Timestamp {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "nickname", nullable = false, unique = true)
+    @Column(name = "nickname", nullable = false)
     private String nickName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
 
     //    @Column(nullable = false)
     //    @Enumerated(value = EnumType.STRING)
