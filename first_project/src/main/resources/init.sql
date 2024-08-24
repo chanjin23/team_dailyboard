@@ -10,6 +10,12 @@ INSERT INTO member
 (created_time,updated_time,email,name,nickname,password)
 VALUES (now(),now(),'test@example.com','홍길동','monkey','1234');
 
+-- insert 2 member id =2
+
+INSERT INTO member
+(created_time,updated_time,email,name,nickname,password)
+VALUES (now(),now(),'chanjin23@naver.com','이찬진','이찬진','123');
+
 -- insert 14 post (member_id=1, board_id=1)
 
 INSERT INTO post

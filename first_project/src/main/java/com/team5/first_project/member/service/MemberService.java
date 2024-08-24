@@ -65,9 +65,9 @@ public class MemberService {
 
     // 회원 탈퇴
     @Transactional
-    public void deleteMember(Long id) {
+    public void deleteMember(Member member) {
         // 회원이 존재하지 않는 경우 예외를 던질 수도 있지만, 여기서는 무시합니다.
-            memberRepository.deleteById(id);
+            memberRepository.deleteById(member.getId());
     }
 }
 

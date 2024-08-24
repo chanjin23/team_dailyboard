@@ -31,29 +31,32 @@
 <body>
 <div class="container">
     <h1 class="text-center mb-4">회원 탈퇴</h1>
-    <form action="@{/members/delete}" method="post">
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">회원 탈퇴 확인</h4>
-            <p>회원 탈퇴를 진행하면 계정과 관련된 모든 데이터가 삭제됩니다.</p>
-            <p>탈퇴를 진행하시려면 아래의 버튼을 클릭하세요.</p>
-        </div>
+    <!--    <form action="@{/members/delete}" method="post">-->
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">회원 탈퇴 확인</h4>
+        <p>회원 탈퇴를 진행하면 계정과 관련된 모든 데이터가 삭제됩니다.</p>
+        <p>탈퇴를 진행하시려면 아래의 버튼을 클릭하세요.</p>
+    </div>
 
-        <div class="form-group mb-3">
-            <label for="reason">탈퇴 사유 :</label>
-            <textarea
-                    id="reason"
-                    name="reason"
-                    class="form-control"
-                    rows="3"
-                    placeholder="탈퇴 사유를 입력하세요 (선택 사항)"
-            ></textarea>
-        </div>
+    <!--        <div class="form-group mb-3">-->
+    <!--            <label for="reason">탈퇴 사유 :</label>-->
+    <!--            <textarea-->
+    <!--                    id="reason"-->
+    <!--                    name="reason"-->
+    <!--                    class="form-control"-->
+    <!--                    rows="3"-->
+    <!--                    placeholder="탈퇴 사유를 입력하세요 (선택 사항)"-->
+    <!--            ></textarea>-->
+    <!--        </div>-->
 
-        <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-danger">탈퇴하기</button>
-            <a href="/members" class="btn btn-secondary">취소</a>
-        </div>
-    </form>
+    <div class="d-flex justify-content-between">
+        <!--            <button type="submit" class="btn btn-danger">탈퇴하기</button>-->
+        <form action="/members/delete" method="post" class="mb-0">
+            <button id="deleteMember" type="submit" class="btn btn-danger">탈퇴하기</button>
+        </form>
+        <a href="/boards" class="btn btn-secondary">취소</a>
+    </div>
+    <!--    </form>-->
 </div>
 
 <!-- 부트스트랩 JS 추가 -->
@@ -62,5 +65,10 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"
 ></script>
+<script th:inline="javascript">
+    document.getElementById('deleteMember').addEventListener('click',function(event){
+        alert('정상적으로 탈퇴했습니다.');
+    });
+</script>
 </body>
 </html>
