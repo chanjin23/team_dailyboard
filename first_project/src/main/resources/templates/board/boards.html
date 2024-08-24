@@ -255,11 +255,27 @@
       currentBoard = boardId;
     }
 
-    function handleDeleteModalButton() {
-      fetch(`/boards/${currentBoard}`, {
-        method: "DELETE",
-      }).then(() => (window.location.href = "/boards"));
-    }
+function handleDeleteModalButton() {
+  fetch(`/boards/${currentBoard}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response.ok) {
+        // 서버가 204 No Content 등의 성공 코드를 반환한 경우
+        window.location.href = "/boards";  // 게시판 목록 페이지로 이동합니다.
+      } else if (response.status === 403) {
+        // 사용자가 게시판을 삭제할 권한이 없는 경우
+        alert("이 게시판을 삭제할 권한이 없습니다.");
+      } else {
+        // 기타 오류 처리
+        alert("게시판을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("게시판을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+    });
+}
 </script>
 
 <!-- 부트스트랩 JS 추가 -->

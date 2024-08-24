@@ -8,6 +8,7 @@ import com.team5.first_project.comment.repository.CommentRepository;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.repository.PostRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +34,26 @@ public class CommentService {
 
     // 댓글 개별 조회
     @Transactional
-    public Comment findComment(long id) {
+    public CommentResponseDto findComment(long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() ->new IllegalArgumentException("해당 댓글이 존재하지 않습니다. id: " + id));
-        return comment;
+        CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+        return commentResponseDto;
+    }
+
+    // 댓글 작성자인지 확인
+    public boolean commentAuthorVerification(long id, HttpSession session){
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+        Member member = (Member) session.getAttribute("member");
+        if (member == null || comment.getMember() == null) {
+            return false;
+        }
+        if (comment.getMember().getId() == member.getId()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // 댓글 수정
