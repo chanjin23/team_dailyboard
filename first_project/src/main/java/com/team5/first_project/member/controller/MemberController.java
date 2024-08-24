@@ -114,13 +114,29 @@ public class MemberController {
         // 개인 정보 수정 후 로그아웃하여 게시판으로 이동
     }
 
+    @GetMapping("/delete")
+    public String deleteMemberPage() {
+        return "member/deleteMember";
+    }
+
     // 회원 탈퇴
     // Resy Api 방식으로 할지 미정
-    @PostMapping("/{id}")
-    public String deleteMember(@PathVariable("id") Long id){
-        memberService.deleteMember(id);
-        return "redirect:/members/logIn";
+    @PostMapping("/delete")
+    public String deleteMember(HttpSession session, Model model){
+        Member member = (Member) session.getAttribute("member");
+        memberService.deleteMember(member);
+        session.invalidate();
+//        model.addAttribute("member", member);
+        return "redirect:/boards"; //게시판으로 이동
     }
+
+//    // 회원 탈퇴
+//    // Resy Api 방식으로 할지 미정
+//    @PostMapping("/{id}")
+//    public String deleteMember(@PathVariable("id") Long id){
+//        memberService.deleteMember(id);
+//        return "redirect:/members/logIn";
+//    }
 
 }
 

@@ -124,6 +124,12 @@
             개인정보 수정
         </button>
     </form>
+    <!--  회원탈퇴  -->
+    <form th:if="${flag == 0}" th:action="@{/members/delete}" method="get">
+        <button type="submit" class="btn btn-primary">
+            회원 탈퇴
+        </button>
+    </form>
 </header>
 <div class="container my-5">
     <div class="header mb-5">
