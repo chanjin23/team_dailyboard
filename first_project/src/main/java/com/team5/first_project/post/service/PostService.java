@@ -7,6 +7,9 @@ import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.post.repository.PostRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +29,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final BoardRepository boardRepository;
+    private final static String VIEWCOOKIENAME = "alreadyViewCookie";
 
     // 게시글 생성
     @Transactional
@@ -57,8 +63,40 @@ public class PostService {
     }
 
     @Transactional
-    public int updateView(Long id) {
-        return postRepository.updateView(id);
+    public int updateView(Long id, HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        boolean checkCookie = false;
+        int result = 0;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(VIEWCOOKIENAME+id))
+                    checkCookie = true;
+            }
+            if(!checkCookie){
+                Cookie newCookie = createCookieForForNotOverlap(id);
+                response.addCookie(newCookie);
+                result = postRepository.updateView(id);
+            }
+        }
+        else {
+            Cookie newCookie = createCookieForForNotOverlap(id);
+            response.addCookie(newCookie);
+            result = postRepository.updateView(id);
+        }
+        return result;
+    }
+
+    private Cookie createCookieForForNotOverlap(Long id) {
+        Cookie cookie = new Cookie(VIEWCOOKIENAME+id, String.valueOf(id));
+        cookie.setMaxAge(getRemainSecondForTommorow()); 	// 하루를 준다.
+        cookie.setHttpOnly(true);				// 서버에서만 조작 가능
+        return cookie;
+    }
+
+    private int getRemainSecondForTommorow() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
+        return (int) now.until(tommorow, ChronoUnit.SECONDS);
     }
 
 

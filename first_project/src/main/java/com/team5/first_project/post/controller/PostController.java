@@ -7,6 +7,8 @@ import com.team5.first_project.post.dto.PostRequestDto;
 import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -66,9 +68,11 @@ public class PostController {
     // 개별 게시글 조회
     @GetMapping("/posts/{postId}")
     public String getPost(@PathVariable("postId") long id,
-                          Model model) {
+                          Model model,
+                          HttpServletRequest request,
+                          HttpServletResponse response) {
+        postService.updateView(id, request, response);
         Post post = postService.findById(id);
-        postService.updateView(id);
         List<Comment> comments = new PostResponseDto(post).getComments();
         List<Comment> orderComments = commentService.orderComment(comments);
 
