@@ -26,4 +26,6 @@ public class MemberPostDto {
 
     @NotNull(message = "회원 유형은 필수 선택항목입니다.")
     private MemberRoleEnum role;
+
+    private String adminCode;
 }

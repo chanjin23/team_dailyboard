@@ -81,5 +81,22 @@ public class MemberService {
             throw new IllegalArgumentException("Member not found with id: " + id);
         }
     }
+
+    public boolean isAdminCode(MemberPostDto memberPostDto) {
+        //관리자 코드 임시설정
+        String memberRole = memberPostDto.getRole().getRoleName();
+        String adminCode = memberPostDto.getAdminCode();
+        String answerAdminCode = "관리자";
+
+        if (memberRole.equals("Admin") && adminCode.equals(answerAdminCode)) {
+            return false;
+        }
+
+        if (memberRole.equals("User")) {
+            return false;
+        }
+
+        return true;
+    }
 }
 
