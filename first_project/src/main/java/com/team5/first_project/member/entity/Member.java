@@ -44,6 +44,7 @@ public class Member extends Timestamp {
         this.nickName = memberPostDto.getNickName();
         this.email = memberPostDto.getEmail();
         this.password = memberPostDto.getPassword();
+        this.role = memberPostDto.getRole();
     }
 
 //    public Member(MemberLogInRequestDto memberLogInRequestDto){
@@ -56,6 +57,7 @@ public class Member extends Timestamp {
         this.nickName = memberPostDto.getNickName();
         this.email = memberPostDto.getEmail();
         this.password = memberPostDto.getPassword();
+        this.role = memberPostDto.getRole();
     }
 
 }
