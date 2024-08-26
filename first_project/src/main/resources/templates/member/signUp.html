@@ -33,7 +33,7 @@
             font-weight: bold;
         }
 
-        input {
+        input, select {
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #cccccc;
@@ -77,6 +77,18 @@
         <label for="password">비밀번호: </label>
         <input type="password" id="password" th:field="*{password}" required/>
 
+        <label for="role">가입유형:</label>
+        <select id="role" name="role" required onchange="toggleAdminInput()">
+            <option value="USER">회원</option>
+            <option value="ADMIN">관리자</option>
+        </select>
+
+        <!-- 관리자 버튼 선택시 -->
+        <div class="form-group" id="adminInput" style="display: none;">
+            <label for="adminCode">관리자 코드:</label>
+            <input type="text" id="adminCode" name="adminCode" class="form-control" placeholder="관리자 입력!">
+        </div>
+
         <button type="submit">회원가입</button>
     </form>
     <div th:if="${nickNameError}" class="error-message">
@@ -85,6 +97,21 @@
     <div th:if="${emailError}" class="error-message">
         <p th:text="${emailError}"></p>
     </div>
+    <div th:if="${adminCodeError}" class="error-message">
+        <p th:text="${adminCodeError}"></p>
+    </div>
 </div>
+<script th:inline="javascript">
+    function toggleAdminInput() {
+        var roleSelect = document.getElementById("role");
+        var adminInput = document.getElementById("adminInput");
+
+        if (roleSelect.value === "ADMIN") {
+            adminInput.style.display = "block"; // 관리자 선택 시 입력 박스 표시
+        } else {
+            adminInput.style.display = "none"; // 회원 선택 시 입력 박스 숨기기
+        }
+    }
+</script>
 </body>
 </html>

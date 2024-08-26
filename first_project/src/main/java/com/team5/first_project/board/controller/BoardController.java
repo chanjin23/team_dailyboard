@@ -33,9 +33,9 @@ public class BoardController {
         Member member = (Member) session.getAttribute("member");
 
         if (member == null) {
-            model.addAttribute("flag", 1);
+            model.addAttribute("logInStatus", 1);
         } else {
-            model.addAttribute("flag", 0);
+            model.addAttribute("logInStatus", 0);
             model.addAttribute("member", member);
         }
         model.addAttribute("boards", boards);
@@ -69,17 +69,6 @@ public class BoardController {
         session.invalidate();
         return "redirect:/boards";
     }
-
-    // 특정 게시판 ID로 조회
-//    @GetMapping("/{boardId}")
-//    public String getBoardById(@PathVariable("boardId") Long id, Model model) {
-//        Board board = boardService.getBoardById(id);
-//        List<PostResponseDto> filterPosts = postService.findAll(id);
-//
-//        model.addAttribute("board", board);
-//        model.addAttribute("postPage", filterPosts);
-//        return "board/board";
-//    }
 
 
     // 게시판 생성
