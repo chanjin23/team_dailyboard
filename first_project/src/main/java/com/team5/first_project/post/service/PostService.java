@@ -1,6 +1,8 @@
 package com.team5.first_project.post.service;
 
 import com.team5.first_project.board.repository.BoardRepository;
+import com.team5.first_project.exception.NotFoundByBoardIdException;
+import com.team5.first_project.exception.NotFoundByPostIdException;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.dto.PostRequestDto;
 import com.team5.first_project.post.dto.PostResponseDto;
@@ -38,7 +40,7 @@ public class PostService {
     @Transactional
     public PostResponseDto createPost(long id, PostRequestDto postRequestDto, Member member){
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID"));
+                .orElseThrow(() -> new NotFoundByBoardIdException(id));
         Post post = new Post(board, postRequestDto, member);
         postRepository.save(post);
         return new PostResponseDto(post);
@@ -107,13 +109,13 @@ public class PostService {
     @Transactional
     public Post findById(long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+                .orElseThrow(() -> new NotFoundByPostIdException(id));
     }
 
     // 게시글의 작성자가 맞는지 확인
     public boolean postAuthorVerification(long id, HttpSession session){
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+                .orElseThrow(() -> new NotFoundByPostIdException(id));
         Member member = (Member) session.getAttribute("member");
         if (member == null || post.getMember() == null) {
             return false;
@@ -129,9 +131,8 @@ public class PostService {
     // 게시글 수정
     @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글은 존재하지 않는 게시글입니다.")
-        );
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByPostIdException(id));
         post.update(requestDto);
         postRepository.save(post);
         return new PostResponseDto(post);
