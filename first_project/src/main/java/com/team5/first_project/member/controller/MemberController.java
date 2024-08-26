@@ -54,25 +54,39 @@ public class MemberController {
     }
 
     @PostMapping("/signUp")
-    public String signUpRequest(@Valid @ModelAttribute MemberPostDto memberPostDto,
-                                Model model) {
-        boolean isNickNameUnique = memberService.isNickNameUnique(memberPostDto.getNickName());
-        boolean isEmailUnique = memberService.isEmailUnique(memberPostDto.getEmail());
-        boolean isAdminCode = memberService.isAdminCode(memberPostDto);
-        if (!isNickNameUnique && !isEmailUnique && !isAdminCode) {
-            memberService.signUp(memberPostDto);
-            return "redirect:/boards";
-        } else {
+    public String signUpRequest(@ModelAttribute MemberPostDto memberPostDto, Model model) {
+        try {
+            // 비밀번호 길이와 특수문자 포함 여부를 수동으로 검증
+            if (memberPostDto.getPassword().length() < 8 || memberPostDto.getPassword().length() > 16) {
+                throw new IllegalArgumentException("비밀번호는 8자 이상 16자 이하이어야 합니다.");
+            }
+            if (!memberPostDto.getPassword().matches("^(?=.*[!@#$%^&*(),.?\":{}|<>~]).+$")) {
+                throw new IllegalArgumentException("비밀번호에는 특수문자가 포함되어야 합니다.");
+            }
+
+            boolean isNickNameUnique = memberService.isNickNameUnique(memberPostDto.getNickName());
+            boolean isEmailUnique = memberService.isEmailUnique(memberPostDto.getEmail());
+            boolean isAdminCode = memberService.isAdminCode(memberPostDto);
+
+            if (!isNickNameUnique && !isEmailUnique && !isAdminCode) {
+                memberService.signUp(memberPostDto);
+                return "redirect:/boards";
+            } else {
+                if (isNickNameUnique) {
+                    model.addAttribute("nickNameError", "이미 사용중인 닉네임입니다.");
+                }
+                if (isEmailUnique) {
+                    model.addAttribute("emailError", "이미 사용중인 이메일입니다.");
+                }
+                if (isAdminCode) {
+                    model.addAttribute("adminCodeError", "관리자 코드를 잘못입력하였습니다.");
+                }
+                model.addAttribute("member", memberPostDto);
+                return "member/signUp";
+            }
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("passwordError", ex.getMessage());
             model.addAttribute("member", memberPostDto);
-            if (isNickNameUnique) {
-                model.addAttribute("nickNameError", "이미 사용중인 닉네임입니다.");
-            }
-            if (isEmailUnique) {
-                model.addAttribute("emailError", "이미 사용중인 이메일입니다.");
-            }
-            if (isAdminCode) {
-                model.addAttribute("adminCodeError", "관리자 코드를 잘못입력하였습니다.");
-            }
             return "member/signUp";
         }
     }
