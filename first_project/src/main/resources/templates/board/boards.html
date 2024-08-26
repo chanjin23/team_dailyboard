@@ -47,7 +47,7 @@
 <body>
 <header>
     <!-- 로그인 버튼 -->
-    <button th:if="${flag==1}"
+    <button th:if="${logInStatus==1}"
             type="button"
             class="btn btn-primary"
             data-bs-toggle="modal"
@@ -113,19 +113,19 @@
         </div>
     </div>
     <!-- 로그아웃 버튼 -->
-    <form th:if="${flag==0}" th:action="@{/boards/logout}" method="post">
+    <form th:if="${logInStatus==0}" th:action="@{/boards/logout}" method="post">
         <button type="submit" class="btn btn-primary">
             로그아웃
         </button>
     </form>
     <!--  개인수정 정보  -->
-    <form th:if="${flag == 0}" th:action="@{/members/edit/{id}(id=${member.id})}" method="get">
+    <form th:if="${logInStatus == 0}" th:action="@{/members/edit/{id}(id=${member.id})}" method="get">
         <button type="submit" class="btn btn-primary">
             개인정보 수정
         </button>
     </form>
     <!--  회원탈퇴  -->
-    <form th:if="${flag == 0}" th:action="@{/members/delete}" method="get">
+    <form th:if="${logInStatus == 0}" th:action="@{/members/delete}" method="get">
         <button type="submit" class="btn btn-primary">
             회원 탈퇴
         </button>

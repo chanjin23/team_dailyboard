@@ -25,8 +25,6 @@ public class BoardApiController {
         if (boardService.administratorVerification(session)){
             boardService.deleteBoard(boardId);
             System.out.println("BoardController.deleteBoard");
-//        return ResponseEntity.ok()
-//                .build();
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

@@ -23,7 +23,6 @@ public class PostResponseDto {
     private Long id;
     private String title;
     private String content;
-    // private String memberName;
     private String boardName;
     private LocalDateTime recentTime;
     private List<Comment> comments;
@@ -34,7 +33,6 @@ public class PostResponseDto {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        // this.memberName = post.getMember().getName();
         this.boardName = post.getBoard().getName();
         this.recentTime = post.getUpdatedTime() == null ? post.getCreatedTime() : post.getUpdatedTime();
         this.comments = post.getCommentList();

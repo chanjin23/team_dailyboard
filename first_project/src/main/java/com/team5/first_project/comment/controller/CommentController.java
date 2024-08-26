@@ -20,17 +20,6 @@ public class CommentController {
     private final CommentService commentService;
     private final BoardService boardService;
 
-    // 댓글 조회
-//    @GetMapping("/comments")
-//    public String findAllComments(Model model) {
-//        List<Comment> comments = commentService.findAllComments();
-//        List<CommentResponseDto> commentResponseDto = comments.stream()
-//                .map(comment -> new CommentResponseDto(comment))
-//                .toList();
-//
-//        model.addAttribute("comments", commentResponseDto);
-//        return "post/test";
-//    }
 
     // 댓글 삭제
     @DeleteMapping("/comments/{id}")

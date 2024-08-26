@@ -56,11 +56,6 @@ public class Member extends Timestamp {
         this.role = memberPostDto.getRole();
     }
 
-//    public Member(MemberLogInRequestDto memberLogInRequestDto){
-//        this.email = memberLogInRequestDto.getEmail();
-//        this.password = memberLogInRequestDto.getPassword();
-//    }
-
     public void toEntity(MemberPostDto memberPostDto){
         this.name = memberPostDto.getName();
         this.nickName = memberPostDto.getNickName();

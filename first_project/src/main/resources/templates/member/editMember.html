@@ -51,17 +51,6 @@
             th:action="@{/members/edit/{id}(id=${member.id})}" method="POST">
         <input type="hidden" name="id" th:value="${member.id}">
 
-        <!--        <div class="form-group">-->
-        <!--            <label for="type" class="form-label">권한 상태</label>-->
-        <!--            <input-->
-        <!--                    type="text"-->
-        <!--                    class="form-control"-->
-        <!--                    id="type"-->
-        <!--                    name="name"-->
-        <!--                    th:value="${member.role.roleName}"-->
-        <!--            />-->
-        <!--        </div>-->
-
         <!-- 권한 선택  -->
         <div class="form-group">
             <label for="role" class="form-label">권한 상태</label>

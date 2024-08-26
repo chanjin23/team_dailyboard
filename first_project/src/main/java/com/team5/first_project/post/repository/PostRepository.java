@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    //Page<Post> findAll(Long id, Pageable pageable);
     Page<Post> findAllByBoard(Board board, Pageable pageable);
 
     Page<Post> findByBoardAndTitleContainingOrBoardAndContentContaining(Board board1, String keyword1, Board board2, String keyword2, Pageable pageable);
