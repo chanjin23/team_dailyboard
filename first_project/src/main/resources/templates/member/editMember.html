@@ -51,6 +51,21 @@
             th:action="@{/members/edit/{id}(id=${member.id})}" method="POST">
         <input type="hidden" name="id" th:value="${member.id}">
 
+        <!-- 권한 선택  -->
+        <div class="form-group">
+            <label for="role" class="form-label">권한 상태</label>
+            <select id="role" name="role" class="form-control" required onchange="toggleAdminInput()">
+                <option value="USER" th:selected="${member.role.roleName == 'User'}">회원</option>
+                <option value="ADMIN" th:selected="${member.role.roleName == 'Admin'}">관리자</option>
+            </select>
+        </div>
+
+        <!-- 관리자 버튼 선택시 -->
+        <div class="form-group" id="adminInput" style="display: none;">
+            <label for="adminCode">관리자 코드:</label>
+            <input type="text" id="adminCode" name="adminCode" class="form-control" placeholder="관리자 코드를 입력하세요('관리자'입력!)">
+        </div>
+
         <div class="form-group">
             <label for="name" class="form-label">이름</label>
             <input
@@ -107,6 +122,9 @@
             </button>
         </div>
     </form>
+    <div th:if="${adminCodeError}" class="error-message">
+        <p th:text="${adminCodeError}"></p>
+    </div>
 </div>
 
 <!-- 부트스트랩 JS 추가 -->
@@ -116,10 +134,26 @@
         crossorigin="anonymous"
 ></script>
 <script th:inline="javascript">
+
+    var adminCodeError = /*[[${adminCodeError}]]*/ false;
+
     document.getElementById('editBtn').addEventListener('click', function(event) {
-        // 사용자에게 알림 메시지를 보여줍니다.
-        alert('개인정보를 수정하셨습니다. 다시 로그인해주세요');
+        // adminCodeError가 true일 때만 알림 메시지를 보여줍니다.
+        if (adminCodeError) {
+            alert('개인정보를 수정하셨습니다. 다시 로그인해주세요');
+        }
     });
+
+    function toggleAdminInput() {
+        var roleSelect = document.getElementById("role");
+        var adminInput = document.getElementById("adminInput");
+
+        if (roleSelect.value === "ADMIN") {
+            adminInput.style.display = "block"; // 관리자 선택 시 입력 박스 표시
+        } else {
+            adminInput.style.display = "none"; // 회원 선택 시 입력 박스 숨기기
+        }
+    }
 </script>
 </body>
 </html>

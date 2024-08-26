@@ -55,9 +55,4 @@ public class Post extends Timestamp {
         this.content = postRequestDto.getContent();
     }
 
-    @Builder
-    public Post (String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
 }

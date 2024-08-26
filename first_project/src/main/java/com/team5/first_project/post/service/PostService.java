@@ -32,6 +32,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final BoardRepository boardRepository;
     private final static String VIEWCOOKIENAME = "alreadyViewCookie";
+    private static final int PAGE_SIZE = 10;
 
     // 게시글 생성
     @Transactional
@@ -59,7 +60,7 @@ public class PostService {
     public Page<Post> findAll(Board board, Pageable pageable) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdTime"));
-        pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by(sorts));
+        pageable = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(sorts));
 
         return postRepository.findAllByBoard(board, pageable);
     }
@@ -100,18 +101,6 @@ public class PostService {
         LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
         return (int) now.until(tommorow, ChronoUnit.SECONDS);
     }
-
-
-    // 게시글 조회
-//    // 전체 게시글 조회
-//    @Transactional
-//    public List<PostResponseDto> findAll(Long boardId) {
-//        return postRepository.findAll()
-//                .stream()
-//                .filter((p)->p.getBoard().getId().equals(boardId))
-//                .map(PostResponseDto::new)
-//                .toList();
-//    }
 
 
     // 개별 게시글 조회

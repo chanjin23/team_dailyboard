@@ -44,18 +44,24 @@ public class Member extends Timestamp {
         this.nickName = memberPostDto.getNickName();
         this.email = memberPostDto.getEmail();
         this.password = memberPostDto.getPassword();
+        this.role = memberPostDto.getRole();
     }
 
-//    public Member(MemberLogInRequestDto memberLogInRequestDto){
-//        this.email = memberLogInRequestDto.getEmail();
-//        this.password = memberLogInRequestDto.getPassword();
-//    }
+    public Member(MemberPostDto memberPostDto, Long id) {
+        this.id = id;
+        this.name = memberPostDto.getName();
+        this.nickName = memberPostDto.getNickName();
+        this.email = memberPostDto.getEmail();
+        this.password = memberPostDto.getPassword();
+        this.role = memberPostDto.getRole();
+    }
 
     public void toEntity(MemberPostDto memberPostDto){
         this.name = memberPostDto.getName();
         this.nickName = memberPostDto.getNickName();
         this.email = memberPostDto.getEmail();
         this.password = memberPostDto.getPassword();
+        this.role = memberPostDto.getRole();
     }
 
 }

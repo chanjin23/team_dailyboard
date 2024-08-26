@@ -13,8 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,11 +20,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
@@ -34,14 +32,13 @@ public class PostController {
     private final BoardService boardService;
 
     // 게시글 생성
-    @GetMapping("/posts/create")
+    @GetMapping("/create")
     public String createPage(@RequestParam("boardId") long boardId, Model model) {
         model.addAttribute("boardId", boardId);
         return "post/createPost";
     }
 
-    // @AuthenticationPrincipal
-    @PostMapping("/posts/create")
+    @PostMapping("/create")
     public String createPost(@RequestParam("boardId") long id,
                              @Valid @ModelAttribute PostRequestDto postRequestDto,
                              BindingResult bindingResult,
@@ -55,21 +52,8 @@ public class PostController {
         return "redirect:/boards/" + id;
     }
 
-//    // 전체 게시글 조회
-//    @GetMapping("/boards/{boardId}")
-//    public String getAllPosts(@PathVariable("boardId") long id, Model model) {
-//        List<PostResponseDto> posts = postService.findAll()
-//                .stream()
-//                .map(PostResponseDto::new)
-//                .toList();
-//
-//        model.addAttribute("posts", posts);
-//
-//        return "board/board";
-//    }
-
     // 개별 게시글 조회
-    @GetMapping("/posts/{postId}")
+    @GetMapping("/{postId}")
     public String getPost(@PathVariable("postId") long id,
                           Model model,
                           HttpServletRequest request,
@@ -86,25 +70,9 @@ public class PostController {
 
         return "post/post";
     }
-    /*
-
-    // 특정 게시판 ID로 조회
-    @GetMapping("/{boardId}")
-    public String getBoardById(@PathVariable("boardId") Long id,
-                               Pageable pageable,
-                               Model model) {
-        Board board = boardService.getBoardById(id);
-        Page<Post> filterPosts = postService.findAll(board, pageable);
-
-        model.addAttribute("board", board);
-        model.addAttribute("postPage", filterPosts);
-        return "board/board";
-    }
-    */
-
 
     // 게시글 수정
-    @GetMapping("/posts/{postId}/edit")
+    @GetMapping("/{postId}/edit")
     public String editPage(@PathVariable("postId") Long id, Model model,
                            HttpSession session) {
         if (postService.postAuthorVerification(id, session)){
@@ -116,8 +84,7 @@ public class PostController {
         }
     }
 
-    // @AuthenticationPrincipal
-    @PostMapping("/posts/{postId}/edit")
+    @PostMapping("/{postId}/edit")
     public String updatePost(@PathVariable("postId") Long id,
                              @Valid @ModelAttribute PostRequestDto requestDto) {
         PostResponseDto postResponseDto = postService.updatePost(id, requestDto);
@@ -125,7 +92,7 @@ public class PostController {
     }
 
     // 게시글 삭제
-    @DeleteMapping("/posts/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable("postId") long id,
                                            HttpSession session) {
         if (postService.postAuthorVerification(id, session) || boardService.administratorVerification(session)){

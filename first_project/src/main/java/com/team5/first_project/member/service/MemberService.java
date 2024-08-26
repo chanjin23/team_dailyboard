@@ -5,7 +5,6 @@ import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-// import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    //private final PasswordEncoder passwordEncoder; // 비밀번호 암호화를 위한 PasswordEncoder
+
 
     //모든 회원 조회
     // 기능을 사용한다면 isDelete가 false인 것만 조회하도록 수정 필요
@@ -65,12 +64,6 @@ public class MemberService {
         member.toEntity(memberPostDto);
     }
 
-    // 회원 탈퇴
-//    @Transactional
-//    public void deleteMember(Member member) {
-//        // 회원이 존재하지 않는 경우 예외를 던질 수도 있지만, 여기서는 무시합니다.
-//            memberRepository.deleteById(member.getId());
-//    }
     @Transactional
     public void softDeleteMember(Long id) {
         Optional<Member> memberOptional = memberRepository.findById(id);
@@ -80,6 +73,23 @@ public class MemberService {
         } else {
             throw new IllegalArgumentException("Member not found with id: " + id);
         }
+    }
+
+    public boolean isAdminCode(MemberPostDto memberPostDto) {
+        //관리자 코드 임시설정
+        String memberRole = memberPostDto.getRole().getRoleName();
+        String adminCode = memberPostDto.getAdminCode();
+        String answerAdminCode = "관리자";
+
+        if (memberRole.equals("Admin") && adminCode.equals(answerAdminCode)) {
+            return false;
+        }
+
+        if (memberRole.equals("User")) {
+            return false;
+        }
+
+        return true;
     }
 }
 

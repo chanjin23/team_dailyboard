@@ -6,7 +6,6 @@ import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.member.dto.MemberResponseDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +58,8 @@ public class MemberController {
                                 Model model) {
         boolean isNickNameUnique = memberService.isNickNameUnique(memberPostDto.getNickName());
         boolean isEmailUnique = memberService.isEmailUnique(memberPostDto.getEmail());
-        if (!isNickNameUnique && !isEmailUnique) {
+        boolean isAdminCode = memberService.isAdminCode(memberPostDto);
+        if (!isNickNameUnique && !isEmailUnique && !isAdminCode) {
             memberService.signUp(memberPostDto);
             return "redirect:/boards";
         } else {
@@ -69,6 +69,9 @@ public class MemberController {
             }
             if (isEmailUnique) {
                 model.addAttribute("emailError", "이미 사용중인 이메일입니다.");
+            }
+            if (isAdminCode) {
+                model.addAttribute("adminCodeError", "관리자 코드를 잘못입력하였습니다.");
             }
             return "member/signUp";
         }
@@ -92,7 +95,7 @@ public class MemberController {
             model.addAttribute("error", "이메일 또는 비밀번호가 일치하지 않습니다.");
             model.addAttribute("loginError", true); // 자바스크립트로 모달 표시를 위한 플래그
             model.addAttribute("boards", boardService.getAllBoards());
-            model.addAttribute("flag", 1);
+            model.addAttribute("logInStatus", 1);
             return "board/boards";
         }
     }
@@ -109,10 +112,21 @@ public class MemberController {
     @PostMapping("/edit/{id}")
     public String updateMember(@PathVariable("id") long id,
                                @Valid @ModelAttribute MemberPostDto memberPostDto,
-                               HttpSession session) {
-        memberService.updateMember(id, memberPostDto);
-        session.invalidate();
-        return "redirect:/boards";
+                               HttpSession session,
+                               Model model) {
+        boolean isAdminCode = memberService.isAdminCode(memberPostDto);
+        if (!isAdminCode) {
+            memberService.updateMember(id, memberPostDto);
+            session.invalidate();
+            return "redirect:/boards";
+        } else {
+            Member member = new Member(memberPostDto, id);
+            model.addAttribute("member", member);
+            if (isAdminCode) {
+                model.addAttribute("adminCodeError", "관리자 코드를 잘못입력하였습니다.");
+            }
+            return "member/editMember";
+        }
         // 개인 정보 수정 후 로그아웃하여 게시판으로 이동
     }
 
