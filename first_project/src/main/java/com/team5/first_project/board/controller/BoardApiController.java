@@ -3,6 +3,7 @@ package com.team5.first_project.board.controller;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.post.service.PostService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,17 @@ public class BoardApiController {
     private final PostService postService;
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable("boardId") Long boardId) {
-        boardService.deleteBoard(boardId);
-        System.out.println("BoardController.deleteBoard");
+    public ResponseEntity<Void> deleteBoard(@PathVariable("boardId") Long boardId,
+                                            HttpSession session) {
+        if (boardService.administratorVerification(session)){
+            boardService.deleteBoard(boardId);
+            System.out.println("BoardController.deleteBoard");
 //        return ResponseEntity.ok()
 //                .build();
-        return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
 }

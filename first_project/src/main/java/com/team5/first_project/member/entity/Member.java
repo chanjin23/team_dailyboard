@@ -35,9 +35,9 @@ public class Member extends Timestamp {
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
-    //    @Column(nullable = false)
-    //    @Enumerated(value = EnumType.STRING)
-    //    private MemberRoleEnum role;
+    @Column(nullable = true)
+    @Enumerated(value = EnumType.STRING)
+    private MemberRoleEnum role;
 
     public Member(MemberPostDto memberPostDto){
         this.name = memberPostDto.getName();

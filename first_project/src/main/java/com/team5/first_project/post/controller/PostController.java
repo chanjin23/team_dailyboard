@@ -1,5 +1,6 @@
 package com.team5.first_project.post.controller;
 
+import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.comment.entity.Comment;
 import com.team5.first_project.comment.service.CommentService;
 import com.team5.first_project.member.entity.Member;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +31,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final BoardService boardService;
 
     // 게시글 생성
     @GetMapping("/posts/create")
@@ -102,10 +105,15 @@ public class PostController {
 
     // 게시글 수정
     @GetMapping("/posts/{postId}/edit")
-    public String editPage(@PathVariable("postId") Long id, Model model) {
-        Post post = postService.findById(id);
-        model.addAttribute("post", new PostResponseDto(post));
-        return "post/editPost";
+    public String editPage(@PathVariable("postId") Long id, Model model,
+                           HttpSession session) {
+        if (postService.postAuthorVerification(id, session)){
+            Post post = postService.findById(id);
+            model.addAttribute("post", new PostResponseDto(post));
+            return "post/editPost";
+        } else {
+            return "redirect:/posts/" +id;
+        }
     }
 
     // @AuthenticationPrincipal
@@ -118,9 +126,14 @@ public class PostController {
 
     // 게시글 삭제
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable("postId") long id) {
-        postService.delete(id);
-        return ResponseEntity.noContent().build(); // 204 No Content 응답을 반환
+    public ResponseEntity<Void> deletePost(@PathVariable("postId") long id,
+                                           HttpSession session) {
+        if (postService.postAuthorVerification(id, session) || boardService.administratorVerification(session)){
+            postService.delete(id);
+            return ResponseEntity.noContent().build(); // 204 No Content 응답을 반환
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
 }

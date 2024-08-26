@@ -4,6 +4,9 @@ import com.team5.first_project.board.dto.RequestBoardDto;
 import com.team5.first_project.board.dto.ResponseBoardDto;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.repository.BoardRepository;
+import com.team5.first_project.member.entity.Member;
+import com.team5.first_project.member.entity.MemberRoleEnum;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,5 +75,18 @@ public class BoardService {
         board.update(description, name, type);
 
         boardRepository.save(board);
+    }
+
+    // 관리자인지 검증
+    public boolean administratorVerification(HttpSession session){
+        Member member = (Member) session.getAttribute("member");
+        if (member == null){
+            return false;
+        }
+        if (member.getRole() == MemberRoleEnum.ADMIN){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

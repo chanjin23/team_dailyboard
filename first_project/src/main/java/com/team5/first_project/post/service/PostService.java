@@ -10,6 +10,7 @@ import com.team5.first_project.post.repository.PostRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -117,6 +119,21 @@ public class PostService {
     public Post findById(long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+    }
+
+    // 게시글의 작성자가 맞는지 확인
+    public boolean postAuthorVerification(long id, HttpSession session){
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+        Member member = (Member) session.getAttribute("member");
+        if (member == null || post.getMember() == null) {
+            return false;
+        }
+        if (post.getMember().getId() == member.getId()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
