@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -16,7 +16,6 @@
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
-
     <style>
         html,
         body {
@@ -46,6 +45,92 @@
     <title>게시판</title>
 </head>
 <body>
+<header>
+    <!-- 로그인 버튼 -->
+    <button th:if="${logInStatus==1}"
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#loginModal"
+    >
+        로그인
+    </button>
+    <div
+            class="modal fade"
+            id="loginModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="loginModalLabel"
+            aria-hidden="true"
+            th:classappend="${loginError} ? 'show' : ''"
+            th:style="${loginError} ? 'display:block' : ''"
+    >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">로그인</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/members/logIn}" method="post" id="loginForm">
+                        <div class="form-group">
+                            <label for="email">이메일</label>
+                            <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    name="email"
+                                    required
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="password">비밀번호</label>
+                            <input
+                                    type="password"
+                                    class="form-control"
+                                    id="password"
+                                    name="password"
+                                    required
+                            />
+                        </div>
+                        <button type="submit" class="btn btn-primary">로그인</button>
+                    </form>
+                </div>
+                <div th:if="${error}" class="error-message">
+                    <p th:text="${error}">이메일 또는 비밀번호가 일치하지 않습니다.</p>
+                </div>
+                <a th:href="@{/members/signUp}">회원이 아니신가요?</a>
+                <a href="#">비밀번호를 잊어버리셨나요?</a>
+
+            </div>
+        </div>
+    </div>
+    <!-- 로그아웃 버튼 -->
+    <form th:if="${logInStatus==0}" th:action="@{/boards/logout}" method="post">
+        <button type="submit" class="btn btn-primary">
+            로그아웃
+        </button>
+    </form>
+    <!--  개인수정 정보  -->
+    <form th:if="${logInStatus == 0}" th:action="@{/members/edit/{id}(id=${member.id})}" method="get">
+        <button type="submit" class="btn btn-primary">
+            개인정보 수정
+        </button>
+    </form>
+    <!--  회원탈퇴  -->
+    <form th:if="${logInStatus == 0}" th:action="@{/members/delete}" method="get">
+        <button type="submit" class="btn btn-primary">
+            회원 탈퇴
+        </button>
+    </form>
+</header>
 <div class="container my-5">
     <div class="header mb-5">
         <h1 class="text-center">게시판 목록</h1>
@@ -67,23 +152,23 @@
                 >
                     <a
                             class="board-item pe-auto p-3 link-underline link-underline-opacity-0 d-flex"
-                            th:href="@{/boards/{boardId}(boardId=${board.id})}"
+                            th:href="@{/boards/{boardId}(boardId=${board?.id})}"
                     >
                         <img
                                 class="img-thumbnail w-50 h-50 me-3"
-                                src="hellobit.png"
+                                th:src="@{/hellobit.png}"
                                 alt="hellobit"
                         />
                         <div>
                             <h4
                                     class="card-title fw-bold text-dark"
-                                    th:text="${board.name}"
+                                    th:text="${board?.name}"
                             >
                                 게시판 이름
                             </h4>
                             <span
                                     class="card-text text-secondary text-wrap"
-                                    th:text="${board.description}"
+                                    th:text="${board?.description}"
                             >게시판 설명</span
                             >
                         </div>
@@ -94,7 +179,7 @@
                         >
                             <button
                                     class="btn btn-outline-primary lh-1"
-                                    th:onclick="'event.preventDefault(); location.href=\'/boards/' + ${board.id} + '/edit\''"
+                                    th:onclick="'event.preventDefault(); location.href=\'/boards/' + ${board?.id} + '/edit\''"
                             >
                                 <span class="material-symbols-outlined"> edit </span>
                             </button>
@@ -170,11 +255,27 @@
       currentBoard = boardId;
     }
 
-    function handleDeleteModalButton() {
-      fetch(`/boards/${currentBoard}/delete`, {
-        method: "DELETE",
-      }).then(() => (window.location.href = "/boards"));
-    }
+function handleDeleteModalButton() {
+  fetch(`/boards/${currentBoard}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response.ok) {
+        // 서버가 204 No Content 등의 성공 코드를 반환한 경우
+        window.location.href = "/boards";  // 게시판 목록 페이지로 이동합니다.
+      } else if (response.status === 403) {
+        // 사용자가 게시판을 삭제할 권한이 없는 경우
+        alert("이 게시판을 삭제할 권한이 없습니다.");
+      } else {
+        // 기타 오류 처리
+        alert("게시판을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("게시판을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+    });
+}
 </script>
 
 <!-- 부트스트랩 JS 추가 -->
@@ -183,5 +284,16 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"
 ></script>
+<script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        // loginError 플래그에 따라 모달을 표시할지 결정
+        var loginError = /*[[${loginError}]]*/ false;
+        if (loginError) {
+            $('#loginModal').modal('show');
+        }
+    });
+</script>
 </body>
 </html>

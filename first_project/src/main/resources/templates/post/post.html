@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -42,15 +42,18 @@
     <a
             class="link link-offset-1 link-offset-2-hover text-sm fs-6 mb-2 d-block"
             style="transition: all 0.1s ease-in-out"
-            th:href="@{/boards/{boardId}(boardId=${post.board.id})}"
+            th:href="@{/boards/{boardId}(boardId=${post.boardId})}"
     >&larr; 게시판으로 돌아가기</a
     >
     <div class="container border rounded p-4 position-relative">
         <div class="header mb-3">
             <h2 class="text-start" th:text="${post.title}">게시글 제목</h2>
         </div>
+        <p th:if="${member!=null}" th:text="|작성자 : ${member.nickName}|">닉네임</p>
+        <p th:if="${member==null}">비회원</p>
+        <p style="text-align: right;" th:text="|조회수 : ${post.view}|">1</p>
         <p class="m-0" th:text="${post.content}">게시글 내용</p>
-        <hr class="mt-4" />
+        <hr class="mt-4"/>
         <h4 class="mb-3">
             댓글
             <small
@@ -71,8 +74,9 @@
             >
                 <div class="card-body position-relative">
                     <p class="mb-2" th:text="${comment.content}">댓글 내용</p>
-                    <small class="text-secondary">2024-01-04T13:21:21</small>
-
+                    <small class="text-secondary" th:text="${comment.createdTime}">2024-01-04T13:21:21</small>
+                    <p th:if="${comment.member!=null}" th:text="|작성자 : ${comment.member.nickName}|">댓글 작성자</p>
+                    <p th:if="${comment.member==null}">비회원</p>
                     <div
                             class="position-absolute end-0 top-50 translate-middle-y mb-3 me-3 btn-group bg-white bg-opacity-75"
                             role="group"
@@ -143,7 +147,7 @@
                             class="dropdown-item text-danger btn btn-danger d-flex align-items-center gap-2"
                             data-bs-toggle="modal"
                             data-bs-target="#deletePostModal"
-                            th:onclick="handleDeletePostButton(event, [[${post.id}]], [[${post.board.id}]]);"
+                            th:onclick="handleDeletePostButton(event, [[${post.id}]], [[${post.boardId}]]);"
                     >
                         <span class="material-symbols-outlined"> delete </span>삭제
                     </button>
@@ -300,28 +304,57 @@
       currentBoard = boardId;
     }
 
-    function handleDeletePostModalButton() {
-      fetch(`/posts/${currentPost}`, {
-        method: "DELETE",
-      }).then(() => (window.location.href = `/boards/${currentBoard}`));
-    }
+function handleDeletePostModalButton() {
+    fetch(`/posts/${currentPost}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response.ok) {
+        window.location.href = `/boards/${currentBoard}`;
+      } else if (response.status === 403) {
+        alert("이 게시글을 삭제할 권한이 없습니다.");
+      } else {
+        alert("게시글을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("게시글을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+    });
+}
 
     function handleDeleteCommentButton(e, commentId) {
       currentComment = commentId;
       elementToDelete = e.target.closest(".card");
     }
 
-    function handleDeleteCommentModalButton() {
-      fetch(`/comments/${currentComment}`, {
-        method: "DELETE",
-      }).then(() => elementToDelete.remove());
+function handleDeleteCommentModalButton() {
+  fetch(`/comments/${currentComment}`, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response.ok) {
+        elementToDelete.remove();
 
-      const commentsCount = document.getElementById("commentsCount");
-      commentsCount.innerText = parseInt(commentsCount.innerText) - 1;
+        // 댓글 수 업데이트
+        const commentsCount = document.getElementById("commentsCount");
+        commentsCount.innerText = parseInt(commentsCount.innerText) - 1;
 
-      const modal = bootstrap.Modal.getInstance("#deleteCommentModal");
-      modal.hide();
-    }
+        // 모달 닫기
+        const modal = bootstrap.Modal.getInstance("#deleteCommentModal");
+        modal.hide();
+      } else if (response.status === 403) {
+        alert("이 댓글을 삭제할 권한이 없습니다.");
+      } else {
+        alert("댓글을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("댓글을 삭제하는 도중 오류가 발생했습니다. 다시 시도해 주세요.");
+    });
+}
+
 
     function handleEditCommentButton(_, commentId, content) {
       document.getElementById("commentContentTextarea").innerText = content;
