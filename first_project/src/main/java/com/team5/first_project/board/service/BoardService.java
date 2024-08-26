@@ -4,6 +4,7 @@ import com.team5.first_project.board.dto.RequestBoardDto;
 import com.team5.first_project.board.dto.ResponseBoardDto;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.repository.BoardRepository;
+import com.team5.first_project.exception.NotFoundByBoardIdException;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.entity.MemberRoleEnum;
 import jakarta.servlet.http.HttpSession;
@@ -33,9 +34,7 @@ public class BoardService {
     @Transactional
     public Board getBoardById(Long id) {
         return boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "해당 게시판은 존재하지 않는 게시판:" + id
-                ));
+                .orElseThrow(() -> new NotFoundByBoardIdException(id));
     }
 
     /**
@@ -57,7 +56,7 @@ public class BoardService {
     @Transactional
     public void deleteBoard(Long id) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("d"));
+                .orElseThrow(() -> new NotFoundByBoardIdException(id));
 
         boardRepository.deleteById(board.getId());
     }
@@ -69,9 +68,7 @@ public class BoardService {
     public void updateBoard(Long id, String description, String name, String type) {
 
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "해당 게시판은 존재하지 않는 게시판:" + id
-                ));
+                .orElseThrow(() -> new NotFoundByBoardIdException(id));
         board.update(description, name, type);
 
         boardRepository.save(board);
