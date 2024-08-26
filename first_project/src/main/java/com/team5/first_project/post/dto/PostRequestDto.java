@@ -25,6 +25,4 @@ public class PostRequestDto {
     @NotBlank(message = "내용을 입력해주세요.")
     @Size(max = 2500, message = "내용은 2500자까지만 허용됩니다.")
     private String content;
-
-
 }

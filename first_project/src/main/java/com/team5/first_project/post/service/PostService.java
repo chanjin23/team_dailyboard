@@ -1,5 +1,6 @@
 package com.team5.first_project.post.service;
 
+import com.team5.first_project.attachment.dto.AttachmentRequestDto;
 import com.team5.first_project.board.repository.BoardRepository;
 import com.team5.first_project.exception.NotFoundByBoardIdException;
 import com.team5.first_project.exception.NotFoundByPostIdException;
@@ -38,12 +39,12 @@ public class PostService {
 
     // 게시글 생성
     @Transactional
-    public PostResponseDto createPost(long id, PostRequestDto postRequestDto, Member member){
+    public Post createPost(long id, PostRequestDto postRequestDto, Member member){
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundByBoardIdException(id));
         Post post = new Post(board, postRequestDto, member);
         postRepository.save(post);
-        return new PostResponseDto(post);
+        return post;
     }
 
     // 키워드 조회
