@@ -41,20 +41,43 @@
         .board-item:hover > .btn-group {
           display: flex;
         }
+        .btn_wrapper{
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+            gap: 5px;
+        }
+        #btn-logOut{
+            background-color: red;
+        }
     </style>
     <title>게시판</title>
 </head>
 <body>
 <header>
     <!-- 로그인 버튼 -->
-    <button th:if="${logInStatus==1}"
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#loginModal"
-    >
-        로그인
-    </button>
+    <div class="btn_wrapper">
+        <button th:if="${logInStatus==1}"
+                type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#loginModal"
+        >
+            로그인
+        </button>
+        <!-- 로그아웃 버튼 -->
+        <form th:if="${logInStatus==0}" th:action="@{/boards/logout}" method="post">
+            <button type="submit" class="btn btn-primary" id="btn-logOut">
+                로그아웃
+            </button>
+        </form>
+        <!--  개인수정 정보  -->
+        <form th:if="${logInStatus == 0}" th:action="@{/members/edit/{id}(id=${member.id})}" method="get">
+            <button type="submit" class="btn btn-primary">
+                개인정보 수정
+            </button>
+        </form>
+    </div>
     <div
             class="modal fade"
             id="loginModal"
@@ -112,24 +135,6 @@
             </div>
         </div>
     </div>
-    <!-- 로그아웃 버튼 -->
-    <form th:if="${logInStatus==0}" th:action="@{/boards/logout}" method="post">
-        <button type="submit" class="btn btn-primary">
-            로그아웃
-        </button>
-    </form>
-    <!--  개인수정 정보  -->
-    <form th:if="${logInStatus == 0}" th:action="@{/members/edit/{id}(id=${member.id})}" method="get">
-        <button type="submit" class="btn btn-primary">
-            개인정보 수정
-        </button>
-    </form>
-    <!--  회원탈퇴  -->
-    <form th:if="${logInStatus == 0}" th:action="@{/members/delete}" method="get">
-        <button type="submit" class="btn btn-primary">
-            회원 탈퇴
-        </button>
-    </form>
 </header>
 <div class="container my-5">
     <div class="header mb-5">
