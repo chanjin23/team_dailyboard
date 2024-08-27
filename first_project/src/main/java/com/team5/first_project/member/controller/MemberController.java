@@ -3,6 +3,7 @@ package com.team5.first_project.member.controller;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.member.dto.MemberLogInRequestDto;
+import com.team5.first_project.member.dto.MemberPasswordDto;
 import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.service.MemberService;
@@ -124,6 +125,26 @@ public class MemberController {
             model.addAttribute("logInStatus", 1);
             return "board/boards";
         }
+    }
+
+    //비밀번호 찾기
+    @GetMapping("/findPassword")
+    public String getPageFindPassword() {
+        return "member/findPassword";
+    }
+
+    @PostMapping("/findPassword")
+    public String findPassword(@RequestParam("name") String name,
+                             @RequestParam("email") String email,
+                             Model model) {
+        boolean isValidInfo=memberService.isValidInfo(name, email);
+        if (isValidInfo) {
+            MemberPasswordDto password = memberService.findPassword(name, email);
+            model.addAttribute("password", password);
+        } else {
+            model.addAttribute("error", "이름과 이메일의 정보가 일치하지 않습니다.");
+        }
+        return "member/findPassword";
     }
 
     // 해당 회원의 기존정보가져오기

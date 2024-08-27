@@ -33,9 +33,9 @@ public class BoardController {
         Member member = (Member) session.getAttribute("member");
 
         if (member == null) {
-            model.addAttribute("logInStatus", 1);
+            model.addAttribute("logInStatus", 1);   //로그인 되어있지 않은상태
         } else {
-            model.addAttribute("logInStatus", 0);
+            model.addAttribute("logInStatus", 0);   //로그인된상태
             model.addAttribute("member", member);
         }
         model.addAttribute("boards", boards);
