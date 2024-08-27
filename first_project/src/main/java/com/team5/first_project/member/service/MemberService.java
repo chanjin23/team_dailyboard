@@ -112,5 +112,16 @@ public class MemberService {
 
         return true;
     }
+
+    public boolean isValidDeleteMember(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByMemberIdException(id));
+        boolean deleted = member.isDeleted();
+        if (deleted) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 

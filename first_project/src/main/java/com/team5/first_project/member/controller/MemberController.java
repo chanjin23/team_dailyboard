@@ -167,8 +167,15 @@ public class MemberController {
     public String deleteMember(HttpSession session, Model model){
         Member member = (Member) session.getAttribute("member");
         memberService.softDeleteMember(member.getId());
-        session.invalidate();
-//        model.addAttribute("member", member);
+
+        boolean isValidDeleteMember=memberService.isValidDeleteMember(member.getId());  //값이 삭제되면 true
+
+        if (isValidDeleteMember) {
+            model.addAttribute("deleteMember", true);
+            session.invalidate();
+        } else {
+            model.addAttribute("deleteMember", false);
+        }
         return "redirect:/boards"; //게시판으로 이동
     }
 
