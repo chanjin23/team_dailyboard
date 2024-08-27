@@ -46,53 +46,53 @@ public class PostController {
         return "post/createPost";
     }
 
-//    @PostMapping("/create")
-//    public String createPost(@RequestParam("boardId") long id,
-//                             @Valid @ModelAttribute PostRequestDto postRequestDto,
-//                             @ModelAttribute AttachmentRequestDto attachmentRequestDto,
-//                             MultipartFile file,
-//                             BindingResult bindingResult,
-//                             HttpSession session) {
-//        // 오류가 나면 다시 생성으로
-//        if (bindingResult.hasErrors()) {
-//            return "post/createPost";
-//        }
-//        Member member = (Member) session.getAttribute("member");
-//        Post post = postService.createPost(id, postRequestDto,  member);
-//        attachmentService.saveFile(post, attachmentRequestDto);
-//        return "redirect:/boards/" + id;
-//    }
-
     @PostMapping("/create")
     public String createPost(@RequestParam("boardId") long id,
                              @Valid @ModelAttribute PostRequestDto postRequestDto,
-                             BindingResult bindingResult,
+                             @ModelAttribute AttachmentRequestDto attachmentRequestDto,
                              @RequestParam(value = "file", required = false) MultipartFile file,
+                             BindingResult bindingResult,
                              HttpSession session) {
+        // 오류가 나면 다시 생성으로
         if (bindingResult.hasErrors()) {
             return "post/createPost";
         }
         Member member = (Member) session.getAttribute("member");
-        Post post = postService.createPost(id, postRequestDto, member);
-        if (!file.isEmpty()) {
-            try {
-                String fileName = file.getOriginalFilename();
-                String filePath = "/path/to/save/" + fileName;
-                try (OutputStream os = new FileOutputStream(new File(filePath))) {
-                    os.write(file.getBytes());
-                }
-                AttachmentRequestDto attachmentRequestDto = new AttachmentRequestDto();
-                attachmentRequestDto.setOriginFileName(fileName);
-                attachmentRequestDto.setFilePath(filePath);
-                attachmentService.saveFile(post, attachmentRequestDto);
-            } catch (IOException e) {
-                e.printStackTrace();
-                bindingResult.reject("fileUploadError", "파일 업로드에 실패했습니다.");
-                return "post/createPost";
-            }
-        }
+        Post post = postService.createPost(id, postRequestDto,  member);
+        attachmentService.saveFile(post, attachmentRequestDto);
         return "redirect:/boards/" + id;
     }
+
+//    @PostMapping("/create")
+//    public String createPost(@RequestParam("boardId") long id,
+//                             @Valid @ModelAttribute PostRequestDto postRequestDto,
+//                             BindingResult bindingResult,
+//                             @RequestParam(value = "file", required = false) MultipartFile file,
+//                             HttpSession session) {
+//        if (bindingResult.hasErrors()) {
+//            return "post/createPost";
+//        }
+//        Member member = (Member) session.getAttribute("member");
+//        Post post = postService.createPost(id, postRequestDto, member);
+//        if (!file.isEmpty()) {
+//            try {
+//                String fileName = file.getOriginalFilename();
+//                String filePath = "/path/to/save/" + fileName;
+//                try (OutputStream os = new FileOutputStream(new File(filePath))) {
+//                    os.write(file.getBytes());
+//                }
+//                AttachmentRequestDto attachmentRequestDto = new AttachmentRequestDto();
+//                attachmentRequestDto.setOriginFileName(fileName);
+//                attachmentRequestDto.setFilePath(filePath);
+//                attachmentService.saveFile(post, attachmentRequestDto);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                bindingResult.reject("fileUploadError", "파일 업로드에 실패했습니다.");
+//                return "post/createPost";
+//            }
+//        }
+//        return "redirect:/boards/" + id;
+//    }
 
 
     // 개별 게시글 조회
