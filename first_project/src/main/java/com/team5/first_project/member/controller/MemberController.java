@@ -1,5 +1,6 @@
 package com.team5.first_project.member.controller;
 
+import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.member.dto.MemberLogInRequestDto;
 import com.team5.first_project.member.dto.MemberPostDto;
@@ -28,11 +29,13 @@ public class MemberController {
     @GetMapping
     public String findAllMembers(Model model) {
         List<Member> members = memberService.findAllMembers();
+        List<Board> boards = boardService.getAllBoards();
         List<MemberResponseDto> memberResponseDtos = members.stream()
-                .map(member -> new MemberResponseDto(member.getNickName(), member.getEmail()))
+                .map(member -> new MemberResponseDto(member.getName(), member.getNickName(), member.getEmail()))
                 .toList();
 
         model.addAttribute("members", memberResponseDtos);
+        model.addAttribute("boards", boards);
         return "member/list"; // 회원 목록을 보여줄 뷰의 이름
     }
 
@@ -41,7 +44,7 @@ public class MemberController {
     public String getMember(@PathVariable("id") Long id, Model model) {
 
         Member member = memberService.getMemberById(id);
-        MemberResponseDto memberResponseDto = new MemberResponseDto(member.getNickName(),  member.getEmail());
+        MemberResponseDto memberResponseDto = new MemberResponseDto(member.getName(), member.getNickName(),  member.getEmail());
         model.addAttribute("member", memberResponseDto);
         return "member/memberDetail";
     }

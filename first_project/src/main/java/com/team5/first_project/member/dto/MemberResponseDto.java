@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MemberResponseDto {
-
+    private String name;
     private String nickName;
     private String email;
 
