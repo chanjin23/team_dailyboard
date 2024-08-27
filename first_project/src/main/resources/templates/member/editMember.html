@@ -42,9 +42,25 @@
             background-color: #6c757d; /* 취소 버튼 색상 조정 */
             border-color: #6c757d;
         }
+        .btn_wrapper{
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+        #membershipWithdrawal{
+            background-color: red;
+        }
     </style>
 </head>
 <body>
+<div class="btn_wrapper">
+    <!--  회원탈퇴  -->
+    <form th:action="@{/members/delete}" method="get">
+        <button type="submit" class="btn btn-primary" id="membershipWithdrawal">
+            회원 탈퇴
+        </button>
+    </form>
+</div>
 <div class="container my-5">
     <h1 class="text-center mb-4">회원 정보 수정</h1>
     <form
