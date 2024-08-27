@@ -65,54 +65,52 @@
                 class="board-item list-group-item p-3 list-group-item-action"
                 th:unless="${members.isEmpty()}"
                 th:each="member : ${members}"
-                th:href="@{/members}"
+                th:href="@{/members/{memberId}(memberId=${member.id})}"
         >
             <h4 class="fw-bold mb-1" th:text="${member.name}">회원 이름</h4>
-            <small class="text-secondary" th:text="${member.nickName}"
-            >회원 닉네임</small
+            <small class="text-secondary" th:text="${member.role.roleName == 'Admin' ? '관리자' : '회원'}"
+            >회원 권한</small
             >
             <br />
             <small class="text-secondary" th:text="${member.email}"
             >회원 이메일</small
             >
         </a>
-<!--        <span-->
-<!--                th:if="${members.isEmpty()}"-->
-<!--                class="text-center"-->
-<!--                th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}"-->
-<!--        ></span>-->
+        <span
+                th:if="${members.isEmpty()}"
+                class="text-center"
+                th:text="${keyword != null ? '`' + keyword + '` 키워드에 해당하는 게시글이 없습니다.' : '올라온 게시글이 없습니다.'}"
+        ></span>
     </div>
-<!--    <div class="w-100 d-flex justify-content-center">-->
-<!--        <ul class="pagination">-->
-<!--            <li class="page-item" th:classappend="${!postPage.hasPrevious()} ? 'disabled'">-->
-<!--                <a class="page-link"-->
-<!--                   th:href="@{/boards/{boardId}(boardId=${board.id}, page=${postPage.number - 1}, size=${postPage.size}, keyword=${keyword})}">-->
-<!--                    <span>이전</span>-->
-<!--                </a>-->
-<!--            </li>-->
-<!--            <li-->
-<!--                    th:each="i : ${members.totalPages > 1 ? #numbers.sequence(0, members.totalPages - 1) : #numbers.sequence(0, 0)}"-->
-<!--                    th:if="${i >= members.number-2 and i <= members.number+2}"-->
-<!--                    class="page-item"-->
-<!--                    th:classappend="${i == members.number ? 'active' : ''}"-->
-<!--            >-->
-<!--                <a-->
-<!--                        class="page-link"-->
-<!--                        th:href="@{/boards/{boardId}(page=${i}, size=${postPage.size}, boardId=${board.id}, keyword=${keyword})}"-->
-<!--                        th:text="${i + 1}"-->
-<!--                >0</a-->
-<!--                >-->
-<!--            </li>-->
-<!--            <li class="page-item" th:classappend="${!postPage.hasNext()} ? 'disabled'">-->
-<!--                <a class="page-link"-->
-<!--                   th:href="@{/boards/{boardId}(boardId=${board.id}, page=${postPage.number + 1}, size=${postPage.size}, keyword=${keyword})}">-->
-<!--                    <span>다음</span>-->
-<!--                </a>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </div>-->
-<!--</div>-->
+    <div class="w-100 d-flex justify-content-center">
+        <ul class="pagination">
+            <!-- 이전 페이지 버튼 -->
+            <li class="page-item" th:classappend="${!members.hasPrevious()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/members(page=${members.number - 1}, size=${members.size}, keyword=${keyword})}">
+                    <span>이전</span>
+                </a>
+            </li>
+            <!-- 페이지 번호 버튼들 -->
+            <li th:each="i : ${members.totalPages > 1 ? #numbers.sequence(0, members.totalPages - 1) : #numbers.sequence(0, 0)}"
+                th:if="${i >= members.number - 2 and i <= members.number + 2}"
+                class="page-item"
+                th:classappend="${i == members.number ? 'active' : ''}">
+                <a class="page-link"
+                   th:href="@{/members(page=${i}, size=${members.size}, keyword=${keyword})}"
+                   th:text="${i + 1}">0</a>
+            </li>
+            <!-- 다음 페이지 버튼 -->
+            <li class="page-item" th:classappend="${!members.hasNext()} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/members(page=${members.number + 1}, size=${members.size}, keyword=${keyword})}">
+                    <span>다음</span>
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
+
 
 <!-- 부트스트랩 JS 추가 -->
 <script

@@ -50,6 +50,9 @@
         #btn-logOut{
             background-color: red;
         }
+        .btn-spacing {
+            margin-right: 5px;
+        }
     </style>
     <title>게시판</title>
 </head>
@@ -141,6 +144,7 @@
         <h1 class="text-center">게시판 목록</h1>
     </div>
     <div class="d-flex justify-content-end mb-3">
+        <a th:if="${logInStatus == 0 && member.role.roleName == 'Admin'}" th:href="@{/members}" class="btn btn-primary btn-spacing">회원 관리</a>
         <a th:href="@{/boards/create}" class="btn btn-primary">게시판 추가</a>
     </div>
     <div class="container p-0">

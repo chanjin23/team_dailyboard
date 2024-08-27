@@ -52,7 +52,7 @@ public class PostService {
     public Page<Post> findKeyword(Board board, String keyword, Pageable pageable) {
         List<Sort.Order> sorts = new ArrayList<>();
         sorts.add(Sort.Order.desc("createdTime"));
-        pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by(sorts));
+        pageable = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(sorts));
 
         return postRepository.findByBoardAndTitleContainingOrBoardAndContentContaining(board, keyword, board, keyword, pageable);
     }

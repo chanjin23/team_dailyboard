@@ -6,9 +6,14 @@ import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +21,28 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-
+    private static final int PAGE_SIZE = 10;
 
     //모든 회원 조회
     // 기능을 사용한다면 isDelete가 false인 것만 조회하도록 수정 필요
-    public List< Member> findAllMembers(){
-        return memberRepository.findAll();}
+    @Transactional
+    public Page< Member> findAllMembers(Pageable pageable){
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.asc("id"));
+        pageable = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(sorts));
+
+        return memberRepository.findAll(pageable);
+    }
+
+    //회원 이름이나 닉네임으로 조회
+    @Transactional
+    public Page<Member> findKeyword(String name, String nickName, Pageable pageable) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.asc("id"));
+        pageable = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(sorts));
+
+        return memberRepository.findByNameContainingOrNickNameContaining(name, nickName, pageable);
+    }
 
     // ID로 회원 조회
     public Member getMemberById(Long id){
