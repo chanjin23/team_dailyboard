@@ -4,7 +4,6 @@ import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.member.dto.MemberLogInRequestDto;
 import com.team5.first_project.member.dto.MemberPostDto;
-import com.team5.first_project.member.dto.MemberResponseDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -114,7 +113,7 @@ public class MemberController {
     public String logInRequest(@Valid @ModelAttribute MemberLogInRequestDto memberLogInRequestDto,
                                HttpSession session, Model model) {
         Optional<Member> optionalMember = memberService.logIn(memberLogInRequestDto);
-        if (optionalMember.isPresent()){
+        if (optionalMember.isPresent()) {
             Member member = optionalMember.get();
             session.setAttribute("member", member);
             return "redirect:/boards";
@@ -129,7 +128,7 @@ public class MemberController {
 
     // 해당 회원의 기존정보가져오기
     @GetMapping("/edit/{id}")
-    public String editMemberPage(@PathVariable("id") Long id, Model model){
+    public String editMemberPage(@PathVariable("id") Long id, Model model) {
         Member member = memberService.getMemberById(id);
         model.addAttribute("member", member);
         return "member/editMember";
@@ -138,11 +137,13 @@ public class MemberController {
     // 회원정보 수정
     @PostMapping("/edit/{id}")
     public String updateMember(@PathVariable("id") long id,
-                               @Valid @ModelAttribute MemberPostDto memberPostDto,
+                               @ModelAttribute MemberPostDto memberPostDto,
                                HttpSession session,
                                Model model) {
+        boolean isValidLengthPassword = memberService.isValidLengthPassword(memberPostDto);
+        boolean isValidGoodPassword = memberService.isValidGoodPassword(memberPostDto);
         boolean isAdminCode = memberService.isAdminCode(memberPostDto);
-        if (!isAdminCode) {
+        if (!isAdminCode && !isValidLengthPassword && !isValidGoodPassword) {
             memberService.updateMember(id, memberPostDto);
             session.invalidate();
             return "redirect:/boards";
@@ -151,6 +152,13 @@ public class MemberController {
             model.addAttribute("member", member);
             if (isAdminCode) {
                 model.addAttribute("adminCodeError", "관리자 코드를 잘못입력하였습니다.");
+            }
+            // if - else if 구문
+            if (isValidLengthPassword) {
+                model.addAttribute("passwordError", "비밀번호는 8자 이상 16자 이하이어야 합니다.");
+            }
+            else if (isValidGoodPassword) {
+                model.addAttribute("passwordError", "비밀번호에는 특수문자가 포함되어야 합니다.");
             }
             return "member/editMember";
         }
@@ -164,11 +172,11 @@ public class MemberController {
 
     // 회원 탈퇴
     @PostMapping("/delete")
-    public String deleteMember(HttpSession session, Model model){
+    public String deleteMember(HttpSession session, Model model) {
         Member member = (Member) session.getAttribute("member");
         memberService.softDeleteMember(member.getId());
 
-        boolean isValidDeleteMember=memberService.isValidDeleteMember(member.getId());  //값이 삭제되면 true
+        boolean isValidDeleteMember = memberService.isValidDeleteMember(member.getId());  //값이 삭제되면 true
 
         if (isValidDeleteMember) {
             model.addAttribute("deleteMember", true);

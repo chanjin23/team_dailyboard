@@ -123,5 +123,20 @@ public class MemberService {
             return false;
         }
     }
+
+    public boolean isValidLengthPassword(MemberPostDto memberPostDto) {
+        // 비밀번호 길이와 특수문자 포함 여부를 수동으로 검증
+        if (memberPostDto.getPassword().length() < 8 || memberPostDto.getPassword().length() > 16) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isValidGoodPassword(MemberPostDto memberPostDto) {
+        if (!memberPostDto.getPassword().matches("^(?=.*[!@#$%^&*(),.?\":{}|<>~]).+$")) {
+            return true;
+        }
+        return false;
+    }
 }
 
