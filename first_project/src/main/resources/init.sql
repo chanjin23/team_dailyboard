@@ -1,3 +1,5 @@
+ALTER TABLE post ALTER COLUMN content TEXT;
+
 -- insert 1 board id=1
 
 INSERT INTO board
