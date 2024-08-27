@@ -27,7 +27,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,53 +50,47 @@ public class PostController {
         return "post/createPost";
     }
 
-//    @PostMapping("/create")
-//    public String createPost(@RequestParam("boardId") long id,
-//                             @Valid @ModelAttribute PostRequestDto postRequestDto,
-//                             @ModelAttribute AttachmentRequestDto attachmentRequestDto,
-//                             MultipartFile file,
-//                             BindingResult bindingResult,
-//                             HttpSession session) {
-//        // 오류가 나면 다시 생성으로
-//        if (bindingResult.hasErrors()) {
-//            return "post/createPost";
-//        }
-//        Member member = (Member) session.getAttribute("member");
-//        Post post = postService.createPost(id, postRequestDto,  member);
-//        attachmentService.saveFile(post, attachmentRequestDto);
-//        return "redirect:/boards/" + id;
-//    }
-
     @PostMapping("/create")
     public String createPost(@RequestParam("boardId") long id,
                              @Valid @ModelAttribute PostRequestDto postRequestDto,
                              BindingResult bindingResult,
                              @RequestParam(value = "file", required = false) MultipartFile file,
                              HttpSession session) {
-        if (bindingResult.hasErrors()) {
-            return "post/createPost";
-        }
+//        if (bindingResult.hasErrors()) {
+//            return "post/createPost";
+//        }
+
         Member member = (Member) session.getAttribute("member");
         Post post = postService.createPost(id, postRequestDto, member);
-        if (!file.isEmpty()) {
+
+        if (file != null && !file.isEmpty()) {
             try {
-                String fileName = file.getOriginalFilename();
-                String filePath = "/path/to/save/" + fileName;
-                try (OutputStream os = new FileOutputStream(new File(filePath))) {
-                    os.write(file.getBytes());
-                }
+                // 고유한 파일 이름 생성 (파일 이름 충돌 방지를 위해 UUID 사용)
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                Path filePath = Paths.get("path/to/upload/directory/" + fileName);
+
+                // 파일 저장
+                Files.write(filePath, file.getBytes());
+
+                // 파일 접근 URL 생성 (파일 접근 경로에 맞게 수정)
+                String fileDownloadUri = "/files/" + fileName;
+
+                // 파일 정보를 데이터베이스에 저장 (필요에 따라 구현)
                 AttachmentRequestDto attachmentRequestDto = new AttachmentRequestDto();
                 attachmentRequestDto.setOriginFileName(fileName);
-                attachmentRequestDto.setFilePath(filePath);
+                attachmentRequestDto.setFilePath(fileDownloadUri);
                 attachmentService.saveFile(post, attachmentRequestDto);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 bindingResult.reject("fileUploadError", "파일 업로드에 실패했습니다.");
                 return "post/createPost";
             }
         }
+
         return "redirect:/boards/" + id;
     }
+
 
 
     // 개별 게시글 조회
