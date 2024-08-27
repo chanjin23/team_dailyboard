@@ -10,6 +10,8 @@ import com.team5.first_project.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,25 +29,33 @@ public class MemberController {
 
     //모든 회원 조회
     @GetMapping
-    public String findAllMembers(Model model) {
-        List<Member> members = memberService.findAllMembers();
+    public String findAllMembers(@RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                 Pageable pageable,
+                                 Model model) {
+        //List<Member> members = memberService.findAllMembers();
         List<Board> boards = boardService.getAllBoards();
-        List<MemberResponseDto> memberResponseDtos = members.stream()
-                .map(member -> new MemberResponseDto(member.getName(), member.getNickName(), member.getEmail()))
-                .toList();
+//        List<MemberResponseDto> memberResponseDtos = members.stream()
+//                .map(member -> new MemberResponseDto(member.getName(), member.getNickName(), member.getEmail()))
+//                .toList();
+        Page<Member> filterMembers = null;
+        if (keyword.isEmpty()) {
+            filterMembers = memberService.findAllMembers(pageable);
+        } else {
+            filterMembers = memberService.findKeyword(keyword, keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        }
 
-        model.addAttribute("members", memberResponseDtos);
+        model.addAttribute("members", filterMembers);
         model.addAttribute("boards", boards);
         return "member/list"; // 회원 목록을 보여줄 뷰의 이름
     }
 
     //특정 ID를 가진 회원 조회
-    @GetMapping("/{id}")
-    public String getMember(@PathVariable("id") Long id, Model model) {
+    @GetMapping("/{memberId}")
+    public String getMember(@PathVariable("memberId") Long id, Model model) {
 
         Member member = memberService.getMemberById(id);
-        MemberResponseDto memberResponseDto = new MemberResponseDto(member.getName(), member.getNickName(),  member.getEmail());
-        model.addAttribute("member", memberResponseDto);
+        model.addAttribute("member", member);
         return "member/memberDetail";
     }
 
