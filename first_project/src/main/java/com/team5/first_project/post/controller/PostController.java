@@ -76,10 +76,10 @@ public class PostController {
                 String fileDownloadUri = "/files/" + fileName;
 
                 // 파일 정보를 데이터베이스에 저장 (필요에 따라 구현)
-                AttachmentRequestDto attachmentRequestDto = new AttachmentRequestDto();
-                attachmentRequestDto.setOriginFileName(fileName);
-                attachmentRequestDto.setFilePath(fileDownloadUri);
-                attachmentService.saveFile(post, attachmentRequestDto);
+//                AttachmentRequestDto attachmentRequestDto = new AttachmentRequestDto();
+//                attachmentRequestDto.setOriginFileName(fileName);
+//                attachmentRequestDto.setFilePath(fileDownloadUri);
+//                attachmentService.saveFile(post, attachmentRequestDto);
 
             } catch (IOException e) {
                 e.printStackTrace();
