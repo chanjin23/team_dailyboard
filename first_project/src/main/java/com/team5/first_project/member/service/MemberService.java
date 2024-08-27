@@ -2,6 +2,7 @@ package com.team5.first_project.member.service;
 
 import com.team5.first_project.exception.NotFoundByMemberIdException;
 import com.team5.first_project.member.dto.MemberLogInRequestDto;
+import com.team5.first_project.member.dto.MemberPasswordDto;
 import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.repository.MemberRepository;
@@ -137,6 +138,23 @@ public class MemberService {
             return true;
         }
         return false;
+    }
+
+    public MemberPasswordDto findPassword(String name, String email) {
+        Member findMember = memberRepository.findByNameAndEmail(name, email)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "입력하신 정보가 없습니다. 이름: " + name + ", 이메일: " + email
+                ));
+        return new MemberPasswordDto(findMember.getPassword());
+    }
+
+    public boolean isValidInfo(String name, String email) {
+        Optional<Member> isIdInfo = memberRepository.findByNameAndEmail(name, email);
+        if (isIdInfo.isPresent()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
