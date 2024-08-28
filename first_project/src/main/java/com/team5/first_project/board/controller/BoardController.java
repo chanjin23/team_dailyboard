@@ -1,11 +1,10 @@
 package com.team5.first_project.board.controller;
 
-import com.team5.first_project.board.dto.RequestBoardDto;
+
 import com.team5.first_project.board.dto.ResponseBoardDto;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.member.entity.Member;
-import com.team5.first_project.post.dto.PostResponseDto;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.service.PostService;
 import jakarta.servlet.http.HttpSession;

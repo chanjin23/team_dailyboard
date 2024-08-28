@@ -1,6 +1,6 @@
 package com.team5.first_project.board.controller;
 
-import com.team5.first_project.board.entity.Board;
+
 import com.team5.first_project.board.service.BoardService;
 import com.team5.first_project.post.service.PostService;
 import jakarta.servlet.http.HttpSession;
