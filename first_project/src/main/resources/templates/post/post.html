@@ -52,7 +52,6 @@
         <p th:if="${member!=null}" th:text="|작성자 : ${member.nickName}|">닉네임</p>
         <p th:if="${member==null}">비회원</p>
         <p style="text-align: right;" th:text="|조회수 : ${post.view}|">1</p>
-<!--        <p class="m-0" th:text="${post.content}">게시글 내용</p>-->
         <!-- 게시글 내용을 HTML로 렌더링 -->
         <div class="m-0" th:utext="${post.content}">게시글 내용</div>
         <hr class="mt-4"/>

@@ -1,6 +1,5 @@
 package com.team5.first_project.post.service;
 
-import com.team5.first_project.attachment.dto.AttachmentRequestDto;
 import com.team5.first_project.board.repository.BoardRepository;
 import com.team5.first_project.exception.NotFoundByBoardIdException;
 import com.team5.first_project.exception.NotFoundByPostIdException;
@@ -26,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,16 +45,6 @@ public class PostService {
         return post;
     }
 
-    // 키워드 조회
-    @Transactional
-    public Page<Post> findKeyword(Board board, String keyword, Pageable pageable) {
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("createdTime"));
-        pageable = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(sorts));
-
-        return postRepository.findByBoardAndTitleContainingOrBoardAndContentContaining(board, keyword, board, keyword, pageable);
-    }
-
     // 게시글 조회
     // 전체 게시글 조회
     @Transactional
@@ -68,6 +56,56 @@ public class PostService {
         return postRepository.findAllByBoard(board, pageable);
     }
 
+    // 키워드 조회
+    @Transactional
+    public Page<Post> findKeyword(Board board, String keyword, Pageable pageable) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createdTime"));
+        pageable = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(sorts));
+
+        return postRepository.findByBoardAndTitleContainingOrBoardAndContentContaining(board, keyword, board, keyword, pageable);
+    }
+
+    // 개별 게시글 조회
+    @Transactional
+    public Post findById(long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByPostIdException(id));
+    }
+
+    // 게시글 수정
+    @Transactional
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByPostIdException(id));
+        post.update(requestDto);
+        postRepository.save(post);
+        return new PostResponseDto(post);
+    }
+
+    // 게시글 삭제
+    @Transactional
+    public void delete(long id) {
+        postRepository.deleteById(id);
+    }
+
+    // 게시글의 작성자가 맞는지 확인
+    public boolean postAuthorVerification(long id, HttpSession session){
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByPostIdException(id));
+        Member member = (Member) session.getAttribute("member");
+        if (member == null || post.getMember() == null) {
+            return false;
+        }
+        if (post.getMember().getId() == member.getId()){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // 조회수 증가
+    // 쿠키로 조회수 중복 불가 설정
     @Transactional
     public int updateView(Long id, HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
@@ -92,6 +130,7 @@ public class PostService {
         return result;
     }
 
+    // 쿠키 설정
     private Cookie createCookieForForNotOverlap(Long id) {
         Cookie cookie = new Cookie(VIEWCOOKIENAME+id, String.valueOf(id));
         cookie.setMaxAge(getRemainSecondForTommorow()); 	// 하루를 준다.
@@ -103,47 +142,6 @@ public class PostService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
         return (int) now.until(tommorow, ChronoUnit.SECONDS);
-    }
-
-
-    // 개별 게시글 조회
-    @Transactional
-    public Post findById(long id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByPostIdException(id));
-    }
-
-    // 게시글의 작성자가 맞는지 확인
-    public boolean postAuthorVerification(long id, HttpSession session){
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByPostIdException(id));
-        Member member = (Member) session.getAttribute("member");
-        if (member == null || post.getMember() == null) {
-            return false;
-        }
-        if (post.getMember().getId() == member.getId()){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    // 게시글 수정
-    @Transactional
-    public PostResponseDto updatePost(Long id, PostRequestDto requestDto) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByPostIdException(id));
-        post.update(requestDto);
-        postRepository.save(post);
-        return new PostResponseDto(post);
-    }
-
-
-    // 게시글 삭제
-    @Transactional
-    public void delete(long id) {
-        postRepository.deleteById(id);
     }
 
 }
