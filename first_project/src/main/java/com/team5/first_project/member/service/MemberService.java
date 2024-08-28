@@ -21,8 +21,32 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private static final int PAGE_SIZE = 10;
+
+    // 회원가입
+    @Transactional
+    public void signUp(MemberPostDto memberPostDto) {
+        //member.setPassword(passwordEncoder.encode(member.getPassword()));
+        Member member = new Member(memberPostDto);
+        memberRepository.save(member);
+    }
+
+    // 회원가입 시 동일한 닉네임이나 이메일을 사용했는지 검증
+    public boolean isNickNameUnique(String nickName){
+        return memberRepository.existsByNickNameAndIsDeletedFalse(nickName);
+    }
+
+    public boolean isEmailUnique(String email){
+        return memberRepository.existsByEmailAndIsDeletedFalse(email);
+    }
+
+    // 로그인
+    public Optional<Member> logIn(MemberLogInRequestDto memberLogInRequestDto){
+        return memberRepository.findByEmailAndIsDeletedFalse(memberLogInRequestDto.getEmail())
+                .filter((m)->m.getPassword().equals(memberLogInRequestDto.getPassword()));
+    }
 
     //모든 회원 조회
     // 기능을 사용한다면 isDelete가 false인 것만 조회하도록 수정 필요
@@ -51,30 +75,6 @@ public class MemberService {
                 .orElseThrow(() -> new NotFoundByMemberIdException(id));
     }
 
-
-    // 회원가입
-    @Transactional
-    public void signUp(MemberPostDto memberPostDto) {
-        //member.setPassword(passwordEncoder.encode(member.getPassword()));
-        Member member = new Member(memberPostDto);
-        memberRepository.save(member);
-    }
-
-    // 회원가입 시 동일한 닉네임이나 이메일을 사용했는지 검증
-    public boolean isNickNameUnique(String nickName){
-        return memberRepository.existsByNickNameAndIsDeletedFalse(nickName);
-    }
-
-    public boolean isEmailUnique(String email){
-        return memberRepository.existsByEmailAndIsDeletedFalse(email);
-    }
-
-    // 로그인
-    public Optional<Member> logIn(MemberLogInRequestDto memberLogInRequestDto){
-        return memberRepository.findByEmailAndIsDeletedFalse(memberLogInRequestDto.getEmail())
-                .filter((m)->m.getPassword().equals(memberLogInRequestDto.getPassword()));
-    }
-
     // 회원 정보 수정
     @Transactional
     public void updateMember(long id, MemberPostDto memberPostDto) {
@@ -82,7 +82,6 @@ public class MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundByMemberIdException(id));
 
-        // 조회한 회원 객체의 필드를 업데이트
         member.toEntity(memberPostDto);
     }
 
