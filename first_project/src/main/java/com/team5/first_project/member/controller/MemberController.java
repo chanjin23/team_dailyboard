@@ -27,38 +27,6 @@ public class MemberController {
     private final MemberService memberService;
     private final BoardService boardService;
 
-    //모든 회원 조회
-    @GetMapping
-    public String findAllMembers(@RequestParam(value = "keyword", defaultValue = "") String keyword,
-                                 Pageable pageable,
-                                 Model model) {
-        //List<Member> members = memberService.findAllMembers();
-        List<Board> boards = boardService.getAllBoards();
-//        List<MemberResponseDto> memberResponseDtos = members.stream()
-//                .map(member -> new MemberResponseDto(member.getName(), member.getNickName(), member.getEmail()))
-//                .toList();
-        Page<Member> filterMembers = null;
-        if (keyword.isEmpty()) {
-            filterMembers = memberService.findAllMembers(pageable);
-        } else {
-            filterMembers = memberService.findKeyword(keyword, keyword, pageable);
-            model.addAttribute("keyword", keyword);
-        }
-
-        model.addAttribute("members", filterMembers);
-        model.addAttribute("boards", boards);
-        return "member/list"; // 회원 목록을 보여줄 뷰의 이름
-    }
-
-    //특정 ID를 가진 회원 조회
-    @GetMapping("/{memberId}")
-    public String getMember(@PathVariable("memberId") Long id, Model model) {
-
-        Member member = memberService.getMemberById(id);
-        model.addAttribute("member", member);
-        return "member/memberDetail";
-    }
-
     // 회원가입
     @GetMapping("/signUp")
     public String signUpPage(Model model) {
@@ -70,10 +38,10 @@ public class MemberController {
     public String signUpRequest(@ModelAttribute MemberPostDto memberPostDto, Model model) {
         try {
             // 비밀번호 길이와 특수문자 포함 여부를 수동으로 검증
-            if (memberPostDto.getPassword().length() < 8 || memberPostDto.getPassword().length() > 16) {
+            if (memberService.isValidLengthPassword(memberPostDto)) {
                 throw new IllegalArgumentException("비밀번호는 8자 이상 16자 이하이어야 합니다.");
             }
-            if (!memberPostDto.getPassword().matches("^(?=.*[!@#$%^&*(),.?\":{}|<>~]).+$")) {
+            if (memberService.isValidGoodPassword(memberPostDto)) {
                 throw new IllegalArgumentException("비밀번호에는 특수문자가 포함되어야 합니다.");
             }
 
@@ -127,6 +95,35 @@ public class MemberController {
         }
     }
 
+    //모든 회원 조회
+    @GetMapping
+    public String findAllMembers(@RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                 Pageable pageable,
+                                 Model model) {
+        List<Board> boards = boardService.getAllBoards();
+
+        Page<Member> filterMembers = null;
+        if (keyword.isEmpty()) {
+            filterMembers = memberService.findAllMembers(pageable);
+        } else {
+            filterMembers = memberService.findKeyword(keyword, keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        }
+
+        model.addAttribute("members", filterMembers);
+        model.addAttribute("boards", boards);
+        return "member/list";
+    }
+
+    //특정 ID를 가진 회원 조회
+    @GetMapping("/{memberId}")
+    public String getMember(@PathVariable("memberId") Long id, Model model) {
+
+        Member member = memberService.getMemberById(id);
+        model.addAttribute("member", member);
+        return "member/memberDetail";
+    }
+
     //비밀번호 찾기
     @GetMapping("/findPassword")
     public String getPageFindPassword() {
@@ -137,7 +134,7 @@ public class MemberController {
     public String findPassword(@RequestParam("name") String name,
                              @RequestParam("email") String email,
                              Model model) {
-        boolean isValidInfo=memberService.isValidInfo(name, email);
+        boolean isValidInfo = memberService.isValidInfo(name, email);
         if (isValidInfo) {
             MemberPasswordDto password = memberService.findPassword(name, email);
             model.addAttribute("password", password);
@@ -183,15 +180,14 @@ public class MemberController {
             }
             return "member/editMember";
         }
-        // 개인 정보 수정 후 로그아웃하여 게시판으로 이동
     }
 
+    // 회원 탈퇴
     @GetMapping("/delete")
     public String deleteMemberPage() {
         return "member/deleteMember";
     }
 
-    // 회원 탈퇴
     @PostMapping("/delete")
     public String deleteMember(HttpSession session, Model model) {
         Member member = (Member) session.getAttribute("member");
@@ -205,7 +201,7 @@ public class MemberController {
         } else {
             model.addAttribute("deleteMember", false);
         }
-        return "redirect:/boards"; //게시판으로 이동
+        return "redirect:/boards";
     }
 
 }
