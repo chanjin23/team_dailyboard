@@ -68,7 +68,7 @@
                 th:href="@{/posts/{postId}(postId=${post.id})}"
         >
             <h4 class="fw-bold mb-1" th:text="${post.title}">게시글 제목</h4>
-            <small class="text-secondary" th:text="${post.createdTime}"
+            <small class="text-secondary" th:text="${post.recentTime()}"
             >게시글 생성일</small
             >
             <p th:if="${post.member!=null}" th:text="|작성자 : ${post.member.nickName}|">게시글 작성자</p>
