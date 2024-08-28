@@ -26,6 +26,27 @@ public class BoardController {
     private final BoardService boardService;
     private final PostService postService;
 
+    // 게시판 생성
+    @GetMapping("/create")
+    public String createBoard(HttpSession session) {
+        if (boardService.administratorVerification(session)){
+            return "board/createBoard";
+        } else {
+            return "redirect:/boards";
+        }
+    }
+
+    // 게시판 생성
+    @PostMapping("/create")
+    public String createBoard(@RequestParam("name") String name,
+                              @RequestParam("description") String description,
+                              @RequestParam("type") String type,
+                              Model model) {
+        ResponseBoardDto saveBoard = boardService.saveBoard (name, description, type);
+        model.addAttribute("boards", saveBoard);
+        return "redirect:/boards";
+    }
+
     // 모든 게시판 조회
     @GetMapping
     public String getAllBoards(Model model, HttpSession session) {
@@ -62,36 +83,6 @@ public class BoardController {
         return "board/board";
     }
 
-    //로그아웃 기능
-    @PostMapping("/logout")
-    public String memberLogoutInBoard(Model model,
-                                      HttpSession session) {
-        session.invalidate();
-        return "redirect:/boards";
-    }
-
-
-    // 게시판 생성
-    @GetMapping("/create")
-    public String createBoard(HttpSession session) {
-        if (boardService.administratorVerification(session)){
-            return "board/createBoard";
-        } else {
-            return "redirect:/boards";
-        }
-    }
-
-    // 게시판 생성
-    @PostMapping("/create")
-    public String createBoard(@RequestParam("name") String name,
-                              @RequestParam("description") String description,
-                              @RequestParam("type") String type,
-                              Model model) {
-        ResponseBoardDto saveBoard = boardService.saveBoard(name, description, type);
-        model.addAttribute("boards", saveBoard);
-        return "redirect:/boards";
-    }
-
     // 게시판 수정 폼 조회
     @GetMapping("/{id}/edit")
     public String editBoard(@PathVariable("id") Long id, Model model,
@@ -114,5 +105,18 @@ public class BoardController {
         boardService.updateBoard(id, description, name, type);
         return "redirect:/boards";
     }
+
+    //로그아웃 기능
+    @PostMapping("/logout")
+    public String memberLogoutInBoard(Model model,
+                                      HttpSession session) {
+        session.invalidate();
+        return "redirect:/boards";
+    }
+
+
+
+
+
 
 }

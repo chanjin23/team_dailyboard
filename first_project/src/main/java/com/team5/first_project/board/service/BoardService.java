@@ -21,23 +21,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     /**
-     * 모든 게시판 조회
-     */
-    @Transactional
-    public List<Board> getAllBoards() {
-        return boardRepository.findAll();
-    }
-
-    /**
-     * 특정 게시판 조회
-     */
-    @Transactional
-    public Board getBoardById(Long id) {
-        return boardRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByBoardIdException(id));
-    }
-
-    /**
      * 게시판 생성 (Create)
      */
     @Transactional
@@ -51,14 +34,21 @@ public class BoardService {
     }
 
     /**
-     * 게시판 삭제
+     * 모든 게시판 조회
      */
     @Transactional
-    public void deleteBoard(Long id) {
-        Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByBoardIdException(id));
+    public List<Board> getAllBoards() {
 
-        boardRepository.deleteById(board.getId());
+        return boardRepository.findAll();
+    }
+
+    /**
+     * 특정 게시판 조회
+     */
+    @Transactional
+    public Board getBoardById(Long id) {
+        return boardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByBoardIdException(id));
     }
 
     /**
@@ -73,6 +63,19 @@ public class BoardService {
 
         boardRepository.save(board);
     }
+
+    /**
+     * 게시판 삭제
+     */
+    @Transactional
+    public void deleteBoard(Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByBoardIdException(id));
+
+        boardRepository.deleteById(board.getId());
+    }
+
+
 
     // 관리자인지 검증
     public boolean administratorVerification(HttpSession session){
