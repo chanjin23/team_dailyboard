@@ -37,8 +37,4 @@ public class Comment extends Timestamp {
         this.content = commentRequestDto.getContent();
         this.member = member;
     }
-
-//    public CommentResponseDto toCommentResponseDto() {
-//        return new CommentResponseDto(id,content);
-//    }
 }

@@ -27,8 +27,7 @@ public class CommentService {
     // 댓글 생성
     @Transactional
     public void createComment(long id, CommentRequestDto commentRequestDto, Member member) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByPostIdException(id));
+        Post post = findPostById(id);
         Comment comment = new Comment(post, commentRequestDto, member);
         commentRepository.save(comment);
     }
@@ -36,15 +35,13 @@ public class CommentService {
     // 댓글 개별 조회
     @Transactional
     public CommentResponseDto findComment(long id) {
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByCommentIdException(id));
+        Comment comment = findCommentById(id);
         return new CommentResponseDto(comment);
     }
 
     // 댓글 작성자인지 확인
     public boolean commentAuthorVerification(long id, HttpSession session){
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByCommentIdException(id));
+        Comment comment = findCommentById(id);
         Member member = (Member) session.getAttribute("member");
         if (member == null || comment.getMember() == null) {
             return false;
@@ -59,8 +56,7 @@ public class CommentService {
     // 댓글 수정
     @Transactional
     public CommentResponseDto updateComment(long id, CommentRequestDto commentRequestDto){
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundByCommentIdException(id));
+        Comment comment = findCommentById(id);
         comment.setContent(commentRequestDto.getContent());
         return new CommentResponseDto(comment);
     }
@@ -76,5 +72,15 @@ public class CommentService {
         comments.sort(Comparator.comparing(Comment::getCreatedTime).reversed());
 
         return comments;
+    }
+
+    private Post findPostById(long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByPostIdException(id));
+    }
+
+    private Comment findCommentById(long id) {
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByCommentIdException(id));
     }
 }
