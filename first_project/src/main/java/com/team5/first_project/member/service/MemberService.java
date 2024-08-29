@@ -140,7 +140,7 @@ public class MemberService {
     }
 
     public MemberPasswordDto findPassword(String name, String email) {
-        Member findMember = memberRepository.findByNameAndEmail(name, email)
+        Member findMember = memberRepository.findByNameAndEmailAndIsDeletedFalse(name, email)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "입력하신 정보가 없습니다. 이름: " + name + ", 이메일: " + email
                 ));
@@ -148,7 +148,7 @@ public class MemberService {
     }
 
     public boolean isValidInfo(String name, String email) {
-        Optional<Member> isIdInfo = memberRepository.findByNameAndEmail(name, email);
+        Optional<Member> isIdInfo = memberRepository.findByNameAndEmailAndIsDeletedFalse(name, email);
         if (isIdInfo.isPresent()) {
             return true;
         } else {
