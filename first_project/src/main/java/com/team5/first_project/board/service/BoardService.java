@@ -33,7 +33,8 @@ public class BoardService {
         Board board = requestBoardDto.toEntity(requestBoardDto);
 
         //파일이 저장된 폴더 경로
-        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static";
+        //String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static";
+        String projectPath = "/home/elice/images/";
 
         if (!file.isEmpty()) {
             UUID uuid = UUID.randomUUID();  //랜덤으로 식별자를 생성
@@ -42,7 +43,7 @@ public class BoardService {
             file.transferTo(saveFile);
 
             board.setFileName(fileName);
-            board.setFilePath(fileName);    //static 아래부분의 파일 경로로만으로도 접근이 가능
+            board.setFilePath(projectPath + fileName);    //static 아래부분의 파일 경로로만으로도 접근이 가능
         }
         Board saveBoard = boardRepository.save(board);
 
