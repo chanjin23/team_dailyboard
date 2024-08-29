@@ -26,7 +26,7 @@ public class Post extends Timestamp {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String content;
 
     @Column(columnDefinition = "integer default 0", nullable = false)
