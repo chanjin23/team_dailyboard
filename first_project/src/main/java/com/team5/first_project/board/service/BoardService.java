@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -105,4 +106,14 @@ public class BoardService {
             return false;
         }
     }
+    // 이름이 중복인지 검증
+    public boolean checkNameDuplication(String name){
+        Optional<Board> board = boardRepository.findByName(name);
+        if (board.isPresent()){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
