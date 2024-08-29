@@ -14,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -28,7 +30,7 @@ public class BoardController {
     // 게시판 생성
     @GetMapping("/create")
     public String createBoard(HttpSession session) {
-        if (boardService.administratorVerification(session)){
+        if (boardService.administratorVerification(session)) {
             return "board/createBoard";
         } else {
             return "redirect:/boards";
@@ -40,8 +42,9 @@ public class BoardController {
     public String createBoard(@RequestParam("name") String name,
                               @RequestParam("description") String description,
                               @RequestParam("type") String type,
-                              Model model) {
-        ResponseBoardDto saveBoard = boardService.saveBoard (name, description, type);
+                              @RequestParam("file") MultipartFile file,
+                              Model model) throws IOException {
+        ResponseBoardDto saveBoard = boardService.saveBoard(name, description, type, file);
         model.addAttribute("boards", saveBoard);
         return "redirect:/boards";
     }
@@ -86,7 +89,7 @@ public class BoardController {
     @GetMapping("/{id}/edit")
     public String editBoard(@PathVariable("id") Long id, Model model,
                             HttpSession session) {
-        if (boardService.administratorVerification(session)){
+        if (boardService.administratorVerification(session)) {
             Board board = boardService.getBoardById(id);
             model.addAttribute("board", board);
             return "board/editBoard";
@@ -112,10 +115,6 @@ public class BoardController {
         session.invalidate();
         return "redirect:/boards";
     }
-
-
-
-
 
 
 }
