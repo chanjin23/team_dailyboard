@@ -167,8 +167,15 @@
                     >
                         <img
                                 class="img-thumbnail w-50 h-50 me-3"
+                                th:unless="${board.fileName}"
                                 th:src="@{/hellobit.png}"
-                                alt="hellobit"
+                                alt="rabbit"
+                        />
+                        <img
+                                class="img-thumbnail w-50 h-50 me-3"
+                                th:if="${board.fileName}"
+                                th:src="@{${board?.fileName}}"
+                                alt="이미지"
                         />
                         <div>
                             <h4
