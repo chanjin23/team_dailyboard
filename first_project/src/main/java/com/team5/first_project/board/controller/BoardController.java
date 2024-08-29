@@ -45,6 +45,8 @@ public class BoardController {
                               @RequestParam("file") MultipartFile file,
                               Model model) throws IOException {
         if (boardService.checkNameDuplication(name)){
+            model.addAttribute("nameDuplicationError",
+                    "이미 존재하는 게시판이름입니다. 게시판이름을 다시 지정해주세요");
             return "board/createBoard";
         }
         ResponseBoardDto saveBoard = boardService.saveBoard(name, description, type, file);
@@ -106,8 +108,9 @@ public class BoardController {
     public String editBoardPage(@PathVariable("id") Long id,
                                 @RequestParam("description") String description,
                                 @RequestParam("name") String name,
-                                @RequestParam("type") String type) {
-        boardService.updateBoard(id, description, name, type);
+                                @RequestParam("type") String type,
+                                @RequestParam("file") MultipartFile file) throws IOException {
+        boardService.updateBoard(id, description, name, type, file);
         return "redirect:/boards";
     }
 

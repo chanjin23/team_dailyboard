@@ -73,14 +73,51 @@ public class BoardService {
      * 게시판 수정
      */
     @Transactional
-    public void updateBoard(Long id, String description, String name, String type) {
+    public void updateBoard(Long id, String description, String name, String type, MultipartFile file) throws IOException {
 
+        //게시판 id찾기
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundByBoardIdException(id));
+
+        //변경할 이미지파일이 들어왔다면 새로운 이미지 파일 업데이트하기
+        String projectPath = "/home/elice/images/";
+
+        if (!file.isEmpty()) {
+            UUID uuid = UUID.randomUUID();  //랜덤으로 식별자를 생성
+            String fileName = uuid + "_" + file.getOriginalFilename();//UUID와 파일이름을 포함된 파일 이름으로 저장
+            File saveFile = new File(projectPath, fileName);
+            file.transferTo(saveFile);
+
+            board.setFileName(fileName);
+            board.setFilePath(projectPath + fileName);    //static 아래부분의 파일 경로로만으로도 접근이 가능
+        }
+
         board.update(description, name, type);
 
         boardRepository.save(board);
     }
+
+    /*
+            RequestBoardDto requestBoardDto = new RequestBoardDto(name, description, type);
+        Board board = requestBoardDto.toEntity(requestBoardDto);
+
+        //파일이 저장된 폴더 경로
+        //String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static";
+        String projectPath = "/home/elice/images/";
+
+        if (!file.isEmpty()) {
+            UUID uuid = UUID.randomUUID();  //랜덤으로 식별자를 생성
+            String fileName = uuid + "_" + file.getOriginalFilename();//UUID와 파일이름을 포함된 파일 이름으로 저장
+            File saveFile = new File(projectPath, fileName);
+            file.transferTo(saveFile);
+
+            board.setFileName(fileName);
+            board.setFilePath(projectPath + fileName);    //static 아래부분의 파일 경로로만으로도 접근이 가능
+        }
+        Board saveBoard = boardRepository.save(board);
+
+        return saveBoard.toResponseBoardDto();
+    * */
 
     /**
      * 게시판 삭제
@@ -106,10 +143,11 @@ public class BoardService {
             return false;
         }
     }
+
     // 이름이 중복인지 검증
-    public boolean checkNameDuplication(String name){
+    public boolean checkNameDuplication(String name) {
         Optional<Board> board = boardRepository.findByName(name);
-        if (board.isPresent()){
+        if (board.isPresent()) {
             return true;
         } else {
             return false;
