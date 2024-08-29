@@ -1,4 +1,4 @@
-ALTER TABLE post ALTER COLUMN content TEXT;
+ALTER TABLE post MODIFY content LONGTEXT;
 
 -- insert 1 board id=1
 
