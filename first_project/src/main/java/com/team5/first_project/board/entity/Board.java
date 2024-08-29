@@ -31,6 +31,10 @@ public class Board {
     @Column(nullable = false)
     private String type; // 게시판의 종류
 
+    private String fileName;    //파일 이름
+
+    private String filePath;    //파일이 저장된 경로
+
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> postList;
 
@@ -44,10 +48,11 @@ public class Board {
     }
 
     public ResponseBoardDto toResponseBoardDto() {
-        return new ResponseBoardDto(name, description, type);
+        return new ResponseBoardDto(name, description, type, filePath, fileName);
     }
+
     public ResponseBoardDto toResponseUpdateBoardDto() {
-        return new ResponseBoardDto(id, name, description, type);
+        return new ResponseBoardDto(id, name, description, type, filePath, fileName);
     }
 
     public void update(String description, String name, String type) {
