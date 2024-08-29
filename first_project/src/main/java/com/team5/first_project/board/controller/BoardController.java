@@ -44,6 +44,9 @@ public class BoardController {
                               @RequestParam("type") String type,
                               @RequestParam("file") MultipartFile file,
                               Model model) throws IOException {
+        if (boardService.checkNameDuplication(name)){
+            return "board/createBoard";
+        }
         ResponseBoardDto saveBoard = boardService.saveBoard(name, description, type, file);
         model.addAttribute("boards", saveBoard);
         return "redirect:/boards";
