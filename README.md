@@ -1,14 +1,12 @@
 # 일상을 공유하는 일상 게시판
 
----
 
-이미지
+<img src="/uploads/78cd93ddc32431e23d4c62e6acbf36e8/image.png" align="center" height="350" width="600"/>
+
 - 배포 URL : http://34.47.115.99:8080/boards
 
 
 ## 프로젝트 소개
-
----
 
 - 각 카테고리 별로 일상과 관련된 게시판을 만들고, 게시글과 댓글을 통해 서로 소통하는 웹페이지 프로젝트입니다.
 - 로그인을 통해 본인만의 게시글과 댓글을 관리하여 등록하고 수정, 삭제 할 수 있습니다.
@@ -24,15 +22,20 @@
 - 이찬진
 - 임서현
 
+
 ## ERD와 와이어프레임
 
----
+- ERD
 
-그림
+<img src="/uploads/1ce1a1008b89bc570a5d931b47a08421/image.png" align="center" height="600" width="600"/>
+
+- 와이어프레임
+
+<img src="/uploads/d4a83e4575efe9be1fc2f295b1018f0c/image.png" align="center" height="350" width="600"/>
+
 
 ## 개발환경
 
----
 
 - 스프링부트 : ver3.3.2
 - 자바 : JDK22
@@ -40,7 +43,6 @@
 
 ## 의존성 라이브러리
 
----
 
 - JPA : org.springframework.boot:spring-boot-starter-data-jpa
 - thymeleaf : org.springframework.boot:spring-boot-starter-thymeleaf
@@ -53,7 +55,6 @@
 
 ## 주요 기능
 
----
 
 ### 회원
 
