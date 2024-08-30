@@ -20,13 +20,48 @@
         }
     </style>
     <title>게시글 추가</title>
+    <!-- TinyMCE 에디터 추가 -->
+    <script
+            src="https://cdn.tiny.cloud/1/zdvzvjfchbxf526nryl1fl3wwuutgcim2pzfhkd4hcujvlu1/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"
+    ></script>
+    <script>
+        tinymce.init({
+        selector: "#content", // textarea의 id로 에디터를 초기화합니다.
+        plugins: "image media link", // 'file' 플러그인 제거
+        toolbar: "undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | image media link",
+        image_title: true,
+        automatic_uploads: true,
+        file_picker_types: "image media", // 'file' 타입 제거
+        file_picker_callback: function (callback, value, meta) {
+            var input = document.createElement("input");
+            input.setAttribute("type", "file");
+            input.setAttribute("accept", "image/*,video/*"); // 필요한 파일 타입에 맞게 설정
+            input.onchange = function () {
+                var file = this.files[0];
+                var reader = new FileReader();
+                reader.onload = function () {
+                    callback(reader.result, {
+                        alt: file.name,
+                    });
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click();
+        },
+    });
+    </script>
 </head>
 <body>
 <div class="container my-5">
     <div class="header mb-5">
         <h1 class="text-center">게시글 추가</h1>
     </div>
-    <form th:action="@{/posts/create(boardId=${boardId})}" method="post">
+    <form
+            th:action="@{/posts/create(boardId=${boardId})}"
+            method="post"
+            enctype="multipart/form-data"
+    >
         <div class="mb-3">
             <label for="title">게시글 제목</label>
             <input
@@ -52,7 +87,7 @@
         <button
                 type="button"
                 class="btn btn-secondary"
-                onclick="window.history.back();"
+                th:onclick="|location.href='@{/boards/{boardId}(boardId=${boardId})}'|"
         >
             취소
         </button>

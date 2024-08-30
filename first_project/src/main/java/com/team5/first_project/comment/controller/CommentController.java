@@ -20,21 +20,9 @@ public class CommentController {
     private final CommentService commentService;
     private final BoardService boardService;
 
-
-    // 댓글 삭제
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("id") long id,
-                                              HttpSession session) {
-        if (commentService.commentAuthorVerification(id, session) ||
-                boardService.administratorVerification(session)){
-            commentService.deleteComment(id);
-            return ResponseEntity.noContent().build(); // 204 No Content 응답을 반환
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-    }
-
-    // 댓글 생성
+    /**
+     * 댓글 생성
+     */
     @PostMapping("/comments")
     public String createComment(@RequestParam("postId") long id,
                                 @Valid @ModelAttribute CommentRequestDto commentRequestDto,
@@ -44,12 +32,14 @@ public class CommentController {
         return "redirect:/posts/" + id;
     }
 
-    // 댓글 수정
+    /**
+     * 댓글 수정
+     */
     @PostMapping("/comments/{commentId}/edit")
     public String updateComment(@PathVariable("commentId") long id,
                                 @Valid @ModelAttribute CommentRequestDto commentRequestDto,
                                 HttpSession session) {
-        if (commentService.commentAuthorVerification(id, session)){
+        if (commentService.commentAuthorVerification(id, session)) {
             CommentResponseDto commentResponseDto = commentService.updateComment(id, commentRequestDto);
             return "redirect:/posts/" + commentResponseDto.getPostId();
         } else {
@@ -57,4 +47,21 @@ public class CommentController {
             return "redirect:/posts/" + commentResponseDto.getPostId();
         }
     }
+
+    /**
+     * 댓글 삭제
+     */
+    @DeleteMapping("/comments/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable("id") long id,
+                                              HttpSession session) {
+        if (commentService.commentAuthorVerification(id, session) ||
+                boardService.administratorVerification(session)) {
+            commentService.deleteComment(id);
+            return ResponseEntity.noContent().build(); // 204 No Content 응답을 반환
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+
 }

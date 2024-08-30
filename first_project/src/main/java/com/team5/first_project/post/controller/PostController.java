@@ -17,10 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -41,14 +41,11 @@ public class PostController {
     @PostMapping("/create")
     public String createPost(@RequestParam("boardId") long id,
                              @Valid @ModelAttribute PostRequestDto postRequestDto,
-                             BindingResult bindingResult,
                              HttpSession session) {
-        // 오류가 나면 다시 생성으로
-        if (bindingResult.hasErrors()) {
-            return "post/createPost";
-        }
+
         Member member = (Member) session.getAttribute("member");
-        PostResponseDto postResponseDto = postService.createPost(id, postRequestDto, member);
+        Post post = postService.createPost(id, postRequestDto, member);
+
         return "redirect:/boards/" + id;
     }
 
@@ -66,7 +63,6 @@ public class PostController {
         model.addAttribute("post", new PostResponseDto(post));
         model.addAttribute("comments", orderComments);
         model.addAttribute("member", post.getMember());
-        // Comments (comment 원소) 리스트타입을 model.addAttribute();
 
         return "post/post";
     }

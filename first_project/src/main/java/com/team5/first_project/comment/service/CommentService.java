@@ -1,10 +1,11 @@
 package com.team5.first_project.comment.service;
 
-import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.comment.dto.CommentRequestDto;
 import com.team5.first_project.comment.dto.CommentResponseDto;
 import com.team5.first_project.comment.entity.Comment;
 import com.team5.first_project.comment.repository.CommentRepository;
+import com.team5.first_project.exception.NotFoundByCommentIdException;
+import com.team5.first_project.exception.NotFoundByPostIdException;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.post.entity.Post;
 import com.team5.first_project.post.repository.PostRepository;
@@ -26,8 +27,7 @@ public class CommentService {
     // 댓글 생성
     @Transactional
     public void createComment(long id, CommentRequestDto commentRequestDto, Member member) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() ->new IllegalArgumentException("존재하지 않는 게시글입니다."));;
+        Post post = findPostById(id);
         Comment comment = new Comment(post, commentRequestDto, member);
         commentRepository.save(comment);
     }
@@ -35,16 +35,13 @@ public class CommentService {
     // 댓글 개별 조회
     @Transactional
     public CommentResponseDto findComment(long id) {
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() ->new IllegalArgumentException("해당 댓글이 존재하지 않습니다. id: " + id));
-        CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
-        return commentResponseDto;
+        Comment comment = findCommentById(id);
+        return new CommentResponseDto(comment);
     }
 
     // 댓글 작성자인지 확인
     public boolean commentAuthorVerification(long id, HttpSession session){
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+        Comment comment = findCommentById(id);
         Member member = (Member) session.getAttribute("member");
         if (member == null || comment.getMember() == null) {
             return false;
@@ -59,8 +56,7 @@ public class CommentService {
     // 댓글 수정
     @Transactional
     public CommentResponseDto updateComment(long id, CommentRequestDto commentRequestDto){
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+        Comment comment = findCommentById(id);
         comment.setContent(commentRequestDto.getContent());
         return new CommentResponseDto(comment);
     }
@@ -76,5 +72,15 @@ public class CommentService {
         comments.sort(Comparator.comparing(Comment::getCreatedTime).reversed());
 
         return comments;
+    }
+
+    private Post findPostById(long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByPostIdException(id));
+    }
+
+    private Comment findCommentById(long id) {
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByCommentIdException(id));
     }
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /*
@@ -24,7 +24,6 @@ public class PostResponseDto {
     private String title;
     private String content;
     private String boardName;
-    private LocalDateTime recentTime;
     private List<Comment> comments;
     private Long boardId;
     private int view;
@@ -34,7 +33,6 @@ public class PostResponseDto {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.boardName = post.getBoard().getName();
-        this.recentTime = post.getUpdatedTime() == null ? post.getCreatedTime() : post.getUpdatedTime();
         this.comments = post.getCommentList();
         this.boardId = post.getBoard().getId();
         this.view = post.getView();

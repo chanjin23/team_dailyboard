@@ -10,10 +10,14 @@ public class ResponseBoardDto {
     private String name;
     private String description;
     private String type;
+    private String filePath;
+    private String fileName;
 
-    public ResponseBoardDto(String name, String description,String type) {
+    public ResponseBoardDto(String name, String description, String type, String filePath, String fileName) {
         this.name = name;
         this.description = description;
         this.type = type;
+        this.filePath = filePath;
+        this.fileName = fileName;
     }
 }

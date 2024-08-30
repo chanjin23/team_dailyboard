@@ -1,5 +1,6 @@
 package com.team5.first_project.post.entity;
 
+import com.team5.first_project.attachment.entity.Attachment;
 import com.team5.first_project.board.entity.Board;
 import com.team5.first_project.comment.entity.Comment;
 import com.team5.first_project.member.entity.Member;
@@ -25,12 +26,11 @@ public class Post extends Timestamp {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String content;
 
     @Column(columnDefinition = "integer default 0", nullable = false)
     private int view;
-
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> commentList = new ArrayList<>();
@@ -42,6 +42,9 @@ public class Post extends Timestamp {
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attachment> attachmentList;
 
     public Post(Board board, PostRequestDto postRequestDto, Member member){
         this.board = board;

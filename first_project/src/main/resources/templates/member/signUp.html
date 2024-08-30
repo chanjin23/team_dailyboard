@@ -74,11 +74,14 @@
         <label for="email">이메일: </label>
         <input type="email" id="email" th:field="*{email}" required/>
 
-        <label for="password">비밀번호: </label>
-        <input type="password" id="password" th:field="*{password}" required/>
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" />
+        <div th:if="${passwordError}" th:text="${passwordError}" style="color: red;"></div>
+
 
         <label for="role">가입유형:</label>
         <select id="role" name="role" required onchange="toggleAdminInput()">
+            <option value="">가입 유형</option>
             <option value="USER">회원</option>
             <option value="ADMIN">관리자</option>
         </select>

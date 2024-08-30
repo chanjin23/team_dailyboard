@@ -26,7 +26,7 @@
     <div class="header mb-5">
         <h1 class="text-center">게시판 추가</h1>
     </div>
-    <form th:action="@{/boards/create}" method="post">
+    <form th:action="@{/boards/create}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="type">게시판 종류</label>
             <input type="text"
@@ -57,15 +57,21 @@
                     placeholder="게시판 설명 입력 (최대 200자)"
             ></textarea>
         </div>
+        <div class="mb-3">
+            <input id="file" type="file" name="file" accept="image/*" />
+        </div>
         <button type="submit" class="btn btn-primary">게시판 추가</button>
         <button
                 type="button"
                 class="btn btn-secondary"
-                onclick="window.history.back();"
+                th:onclick="|location.href='@{/boards}'|"
         >
             취소
         </button>
     </form>
+    <div th:if="${nameDuplicationError}" class="mb-3">
+        <p th:text="${nameDuplicationError}"></p>
+    </div>
 </div>
 
 <!-- 부트스트랩 JS 추가 -->

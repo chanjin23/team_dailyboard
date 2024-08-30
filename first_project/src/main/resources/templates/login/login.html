@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class=" Login">
+    <h1 class = "title">로그인 페이지</h1>
+    <hr>
+    <form method="Post" action="LoginController">
+        <p class = "id">ID: <input type="text" name = "User_Id" /></p>
+        <p class = "pw">PW: <input type="text" name = "User_Pwd" /></p>
+        <p class = "button"><input type="submit" name = "로그인하기" /></p>
+    </form>
+
+    <p><input type = "button" class="button" onclick="location.href='makeidpage.jsp'" value="회원가입"> </p>
+    <hr>
+</div>
+</body>
+</html>

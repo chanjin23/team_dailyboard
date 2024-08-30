@@ -1,3 +1,5 @@
+ALTER TABLE post MODIFY content LONGTEXT;
+
 -- insert 1 board id=1
 
 INSERT INTO board

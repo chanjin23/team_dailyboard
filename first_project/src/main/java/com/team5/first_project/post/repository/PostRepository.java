@@ -16,7 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findByBoardAndTitleContainingOrBoardAndContentContaining(Board board1, String keyword1, Board board2, String keyword2, Pageable pageable);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Post p set p.view = p.view + 1 where p.id = :id")
     int updateView(@Param("id") Long id);
 }

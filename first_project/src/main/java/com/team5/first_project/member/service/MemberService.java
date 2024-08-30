@@ -1,34 +1,29 @@
 package com.team5.first_project.member.service;
 
+import com.team5.first_project.exception.NotFoundByMemberIdException;
 import com.team5.first_project.member.dto.MemberLogInRequestDto;
+import com.team5.first_project.member.dto.MemberPasswordDto;
 import com.team5.first_project.member.dto.MemberPostDto;
 import com.team5.first_project.member.entity.Member;
 import com.team5.first_project.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+
     private final MemberRepository memberRepository;
-
-
-    //모든 회원 조회
-    // 기능을 사용한다면 isDelete가 false인 것만 조회하도록 수정 필요
-    public List< Member> findAllMembers(){
-        return memberRepository.findAll();}
-
-    // ID로 회원 조회
-    public Member getMemberById(Long id){
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다"));
-        // RuntimeException인지 확인 필요
-    }
-
+    private static final int PAGE_SIZE = 10;
 
     // 회원가입
     @Transactional
@@ -53,14 +48,40 @@ public class MemberService {
                 .filter((m)->m.getPassword().equals(memberLogInRequestDto.getPassword()));
     }
 
+    //모든 회원 조회
+    // 기능을 사용한다면 isDelete가 false인 것만 조회하도록 수정 필요
+    @Transactional
+    public Page< Member> findAllMembers(Pageable pageable){
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.asc("id"));
+        pageable = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(sorts));
+
+        return memberRepository.findAll(pageable);
+    }
+
+    //회원 이름이나 닉네임으로 조회
+    @Transactional
+    public Page<Member> findKeyword(String name, String nickName, Pageable pageable) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.asc("id"));
+        pageable = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(sorts));
+
+        return memberRepository.findByNameContainingOrNickNameContaining(name, nickName, pageable);
+    }
+
+    // ID로 회원 조회
+    public Member getMemberById(Long id){
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByMemberIdException(id));
+    }
+
     // 회원 정보 수정
     @Transactional
     public void updateMember(long id, MemberPostDto memberPostDto) {
 
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+                .orElseThrow(() -> new NotFoundByMemberIdException(id));
 
-        // 조회한 회원 객체의 필드를 업데이트
         member.toEntity(memberPostDto);
     }
 
@@ -71,7 +92,7 @@ public class MemberService {
             Member member = memberOptional.get();
             member.setDeleted(true);
         } else {
-            throw new IllegalArgumentException("Member not found with id: " + id);
+            throw new NotFoundByMemberIdException(id);
         }
     }
 
@@ -90,6 +111,49 @@ public class MemberService {
         }
 
         return true;
+    }
+
+    public boolean isValidDeleteMember(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new NotFoundByMemberIdException(id));
+        boolean deleted = member.isDeleted();
+        if (deleted) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isValidLengthPassword(MemberPostDto memberPostDto) {
+        // 비밀번호 길이와 특수문자 포함 여부를 수동으로 검증
+        if (memberPostDto.getPassword().length() < 8 || memberPostDto.getPassword().length() > 16) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isValidGoodPassword(MemberPostDto memberPostDto) {
+        if (!memberPostDto.getPassword().matches("^(?=.*[!@#$%^&*(),.?\":{}|<>~]).+$")) {
+            return true;
+        }
+        return false;
+    }
+
+    public MemberPasswordDto findPassword(String name, String email) {
+        Member findMember = memberRepository.findByNameAndEmailAndIsDeletedFalse(name, email)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "입력하신 정보가 없습니다. 이름: " + name + ", 이메일: " + email
+                ));
+        return new MemberPasswordDto(findMember.getPassword());
+    }
+
+    public boolean isValidInfo(String name, String email) {
+        Optional<Member> isIdInfo = memberRepository.findByNameAndEmailAndIsDeletedFalse(name, email);
+        if (isIdInfo.isPresent()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

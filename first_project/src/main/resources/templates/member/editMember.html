@@ -42,9 +42,25 @@
             background-color: #6c757d; /* 취소 버튼 색상 조정 */
             border-color: #6c757d;
         }
+        .btn_wrapper{
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+        #membershipWithdrawal{
+            background-color: red;
+        }
     </style>
 </head>
 <body>
+<div class="btn_wrapper">
+    <!--  회원탈퇴  -->
+    <form th:action="@{/members/delete}" method="get">
+        <button type="submit" class="btn btn-primary" id="membershipWithdrawal">
+            회원 탈퇴
+        </button>
+    </form>
+</div>
 <div class="container my-5">
     <h1 class="text-center mb-4">회원 정보 수정</h1>
     <form
@@ -116,7 +132,7 @@
             <button
                     type="button"
                     class="btn btn-secondary"
-                    onclick="window.history.back();"
+                    th:onclick="|location.href='@{/boards}'|"
             >
                 취소
             </button>
@@ -124,6 +140,9 @@
     </form>
     <div th:if="${adminCodeError}" class="error-message">
         <p th:text="${adminCodeError}"></p>
+    </div>
+    <div th:if="${passwordError}" class="error-message">
+        <p th:text="${passwordError}"></p>
     </div>
 </div>
 
@@ -135,25 +154,25 @@
 ></script>
 <script th:inline="javascript">
 
-    var adminCodeError = /*[[${adminCodeError}]]*/ false;
+//    var adminCodeError = /*[[${adminCodeError}]]*/ false;
 
-    document.getElementById('editBtn').addEventListener('click', function(event) {
-        // adminCodeError가 true일 때만 알림 메시지를 보여줍니다.
-        if (adminCodeError) {
-            alert('개인정보를 수정하셨습니다. 다시 로그인해주세요');
-        }
-    });
+//    document.getElementById('editBtn').addEventListener('click', function(event) {
+//        // adminCodeError가 true일 때만 알림 메시지를 보여줍니다.
+//        if (adminCodeError) {
+//            alert('개인정보를 수정하셨습니다. 다시 로그인해주세요');
+//        }
+//    });
 
-    function toggleAdminInput() {
-        var roleSelect = document.getElementById("role");
-        var adminInput = document.getElementById("adminInput");
+function toggleAdminInput() {
+    var roleSelect = document.getElementById("role");
+    var adminInput = document.getElementById("adminInput");
 
-        if (roleSelect.value === "ADMIN") {
-            adminInput.style.display = "block"; // 관리자 선택 시 입력 박스 표시
-        } else {
-            adminInput.style.display = "none"; // 회원 선택 시 입력 박스 숨기기
-        }
+    if (roleSelect.value === "ADMIN") {
+        adminInput.style.display = "block"; // 관리자 선택 시 입력 박스 표시
+    } else {
+        adminInput.style.display = "none"; // 회원 선택 시 입력 박스 숨기기
     }
+}
 </script>
 </body>
 </html>
