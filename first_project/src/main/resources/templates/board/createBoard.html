@@ -64,11 +64,14 @@
         <button
                 type="button"
                 class="btn btn-secondary"
-                onclick="window.history.back();"
+                th:onclick="|location.href='@{/boards}'|"
         >
             취소
         </button>
     </form>
+    <div th:if="${nameDuplicationError}" class="mb-3">
+        <p th:text="${nameDuplicationError}"></p>
+    </div>
 </div>
 
 <!-- 부트스트랩 JS 추가 -->

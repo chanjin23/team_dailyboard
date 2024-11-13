@@ -87,7 +87,7 @@
         <button
                 type="button"
                 class="btn btn-secondary"
-                onclick="window.history.back();"
+                th:onclick="|location.href='@{/boards/{boardId}(boardId=${boardId})}'|"
         >
             취소
         </button>

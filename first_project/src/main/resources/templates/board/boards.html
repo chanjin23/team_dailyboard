@@ -19,6 +19,13 @@
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
     <style>
+        .text-center {
+            font-family: 'Arial', sans-serif;
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 1px;
+        }
         html,
         body {
           font-family: "Elice DX Neolli", sans-serif;
@@ -143,7 +150,7 @@
 </header>
 <div class="container my-5">
     <div class="header mb-5">
-        <h1 class="text-center">게시판 목록</h1>
+        <h1 class="text-center">Daily</h1>
     </div>
     <div class="d-flex justify-content-end mb-3">
         <a th:if="${logInStatus == 0 && member.role.roleName == 'Admin'}" th:href="@{/members}" class="btn btn-primary btn-spacing">회원 관리</a>
@@ -174,7 +181,7 @@
                         <img
                                 class="img-thumbnail w-50 h-50 me-3"
                                 th:if="${board.fileName}"
-                                th:src="@{${board?.filePath}}"
+                                th:src="@{${board.filePath}}"
                                 alt="이미지"
                         />
                         <div>

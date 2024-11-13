@@ -29,6 +29,7 @@
     <form
             th:action="@{/boards/{boardId}/edit(boardId=${board.id})}"
             method="POST"
+            enctype="multipart/form-data"
     >
         <div class="mb-3">
             <label for="type">게시판 종류</label>
@@ -63,11 +64,14 @@
                     th:text="${board.description}"
             ></textarea>
         </div>
+        <div class="mb-3">
+            <input id="file" type="file" name="file" accept="image/*" />
+        </div>
         <button type="submit" class="btn btn-primary">게시판 수정</button>
         <button
                 type="button"
                 class="btn btn-secondary"
-                onclick="window.history.back();"
+                th:onclick="|location.href='@{/boards}'|"
         >
             취소
         </button>
