@@ -30,4 +30,8 @@ public class PostService {
         data.add(post);
         return post;
     }
+//    public Post updatePost(Long id, PostDTO postDTO){
+//        Post sendData =data;
+//
+//    }
 }
